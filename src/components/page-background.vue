@@ -50,24 +50,28 @@
         >
           <div class="flex flex-col items-start justify-start py-0 pr-1.5 pl-0">
             <a
-              class="[text-decoration:none] relative text-[inherit] inline-block min-w-[58px]"
+              class="[text-decoration:none] relative text-[inherit] inline-block min-w-[58px] cursor-pointer"
+              @click="onHomeClick"
               >Home</a
             >
           </div>
           <a
-            class="[text-decoration:none] relative text-lightseagreen-200 inline-block min-w-[64px]"
+            class="[text-decoration:none] relative text-lightseagreen-200 inline-block min-w-[64px] cursor-pointer"
+            @click="onDonasiClick"
             >Donasi</a
           >
           <div
             class="w-[62px] flex flex-col items-start justify-start py-0 pr-1 pl-0 box-border"
           >
             <a
-              class="[text-decoration:none] self-stretch relative text-[inherit]"
-              >News</a
+              class="[text-decoration:none] self-stretch relative text-[inherit] cursor-pointer"
+              @click="onBeritaClick"
+              >Berita</a
             >
           </div>
           <a
-            class="[text-decoration:none] relative text-[inherit] whitespace-nowrap"
+            class="[text-decoration:none] relative text-[inherit] whitespace-nowrap cursor-pointer"
+            @click="onRiwayatDonasiClick"
             >Riwayat Donasi</a
           >
         </nav>
@@ -76,9 +80,23 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from "vue";
+import { defineComponent } from "vue";
 
-  export default defineComponent({
-    name: "PageBackground",
-  });
+export default defineComponent({
+  name: "PageBackground",
+  methods: {
+    onHomeClick() {
+      this.$router.push("/");
+    },
+    onDonasiClick() {
+      this.$router.push("/donasi");
+    },
+    onBeritaClick() {
+      this.$router.push("/berita");
+    },
+    onRiwayatDonasiClick() {
+      this.$router.push("/riwayat-donasi");
+    },
+  },
+});
 </script>

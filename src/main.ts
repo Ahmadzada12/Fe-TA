@@ -10,6 +10,10 @@ import Berita1 from "./pages/berita1.vue";
 import InfoDonatur from "./pages/info-donatur.vue";
 import Donasi from "./components/donasi.vue";
 import "./global.css";
+import login from "./pages/login.vue";
+import PilihNominalDonasi from "./components/pilih-nominal-donasi.vue";
+import Register from "./pages/register.vue";
+import VendorProfile from "./pages/vendor-profile.vue";
 
 interface Route {
   path: string;
@@ -22,6 +26,16 @@ const routes: Route[] = [
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: login,
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: Register,
   },
   {
     path: "/donasi1",
@@ -52,6 +66,21 @@ const routes: Route[] = [
     path: "/donasi",
     name: "Donasi",
     component: Donasi,
+  },
+  {
+    path: "/pilih-nominal-donasi",
+    name: "PilihNominalDonasi",
+    component: PilihNominalDonasi,
+  },
+  {
+    path: "/profile",
+    name: "VendorProfilePage",
+    component: VendorProfile,
+  },
+  {
+    path: "/pilih-nominal-donasi",
+    name: "PilihNominalDonasi",
+    component: PilihNominalDonasi,
   },
 ];
 

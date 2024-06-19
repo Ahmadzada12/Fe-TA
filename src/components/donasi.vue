@@ -131,6 +131,7 @@
                 </div>
                 <button
                   class="cursor-pointer pt-[5px] px-5 pb-1.5 bg-lightseagreen-200 self-stretch rounded flex flex-row items-start justify-center border-[1px] border-solid border-royalblue-100 hover:bg-lightseagreen-100 hover:box-border hover:border-[1px] hover:border-solid hover:border-cornflowerblue-100"
+                  @click="onDonasiClick"
                 >
                   <div
                     class="w-[55.3px] relative text-base leading-[24px] font-poppins text-white text-center flex items-center justify-center shrink-0 min-w-[55.3px]"
@@ -183,9 +184,15 @@ export default defineComponent({
   name: "Donasi",
   components: {
     PageBackground,
+
     Item2,
     Item,
     GroupComponent4,
+  },
+  methods: {
+    onDonasiClick() {
+      this.$router.push("/donasi1");
+    },
   },
   data() {
     return {

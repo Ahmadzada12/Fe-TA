@@ -49,8 +49,9 @@
               <div
                 class="relative inline-block min-w-[58px] cursor-pointer"
                 @click="onHomeTextClick"
-                >Home</div
               >
+                Home
+              </div>
             </div>
             <a
               class="[text-decoration:none] relative text-lightseagreen-200 inline-block min-w-[64px] cursor-pointer"
@@ -69,8 +70,9 @@
             <div
               class="relative whitespace-nowrap cursor-pointer"
               @click="onRiwayatDonasiTextClick"
-              >Riwayat Donasi</div
             >
+              Riwayat Donasi
+            </div>
           </nav>
         </nav>
       </header>
@@ -126,14 +128,14 @@
                       class="w-[368px] h-[400px] relative bg-white hidden max-w-full"
                     />
                     <div
-                      class="self-stretch rounded bg-lightseagreen-200 flex flex-row items-start justify-start py-0 pr-[72px] pl-[73px] z-[1] border-[1px] border-solid border-gray-800 mq450:pl-5 mq450:pr-5 mq450:box-border"
+                      class="self-stretch rounded bg-lightseagreen-200 flex flex-row items-start justify-start py-0 pr-[72px] pl-[73px] z-[1] border-[1px] border-solid border-gray-800 mq450:pl-5 mq450:pr-5 mq450:box-border cursor-pointer"
+                      @click="onPilihNominalTextClick"
                     >
                       <div
                         class="h-[62px] w-[279px] relative rounded bg-lightseagreen-200 box-border hidden border-[1px] border-solid border-gray-800"
                       />
                       <a
-                        class="[text-decoration:none] flex-1 relative leading-[60px] uppercase text-[inherit] z-[1] mq450:text-lgi mq450:leading-[48px] cursor-pointer"
-                        @click="onInfoDonaturTextClick"
+                        class="[text-decoration:none] flex-1 relative leading-[60px] uppercase text-[inherit] z-[1] mq450:text-lgi mq450:leading-[48px]"
                         >Donasi</a
                       >
                     </div>
@@ -344,8 +346,8 @@ export default defineComponent({
     onRiwayatDonasiTextClick() {
       this.$router.push("/riwayat-donasi");
     },
-    onInfoDonaturTextClick() {
-      this.$router.push("/infodonatur");
+    onPilihNominalTextClick() {
+      this.$router.push("/pilih-nominal-donasi");
     },
     async onShareClick() {
       try {

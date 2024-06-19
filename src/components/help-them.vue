@@ -24,7 +24,7 @@
         alt=""
         src="/line.svg"
       />
-      <div
+      <!-- <div
         class="flex-1 flex flex-row items-start justify-center pt-[78.1px] px-5 pb-[77.6px] bg-[url('/rectangle-2@2x.png')] bg-cover bg-no-repeat bg-[top] z-[2]"
       >
         <img
@@ -38,7 +38,7 @@
           alt=""
           src="/play.svg"
         />
-      </div>
+      </div> -->
     </div>
   </section>
 </template>
