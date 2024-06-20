@@ -13,8 +13,6 @@ import "./global.css";
 import login from "./pages/login.vue";
 import PilihNominalDonasi from "./components/pilih-nominal-donasi.vue";
 import Register from "./pages/register.vue";
-import VendorProfile from "./pages/vendor-profile.vue";
-
 interface Route {
   path: string;
   name: string;
@@ -71,11 +69,6 @@ const routes: Route[] = [
     path: "/pilih-nominal-donasi",
     name: "PilihNominalDonasi",
     component: PilihNominalDonasi,
-  },
-  {
-    path: "/profile",
-    name: "VendorProfilePage",
-    component: VendorProfile,
   },
   {
     path: "/pilih-nominal-donasi",

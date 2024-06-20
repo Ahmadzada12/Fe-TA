@@ -15,7 +15,7 @@ const colors = {
             color:colors 
         },
         defaultVariants: {
-            color:'lightseagreen'
+            color:'primary'
         }
     })
 
@@ -29,7 +29,7 @@ const className = computed(()=> {
 <template>
     <button :class="className">
         <slot name="icon" />
-        <slot />
+        < slot />
     </button>
 </template>
 

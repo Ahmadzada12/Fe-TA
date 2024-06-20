@@ -82,8 +82,8 @@
                   class="w-[55.3px] rounded-[3.2px] box-border flex flex-row items-start justify-start pt-[3px] pb-1 pr-1.5 pl-[9px] border-[1px] border-solid border-crimson"
                 >
                   <div
-                    class="relative text-sm leading-[21px] font-poppins text-crimson text-center inline-block min-w-[38px]"
-                  >
+                    class="relative text-sm leading-[21px] font-poppins text-crimson text-center inline-block min-w-[38px] cursor-pointer"
+                 @click="onUbahClick" >
                     Ubah
                   </div>
                 </div>
@@ -201,6 +201,9 @@
     methods: {
       onButtonClick() {
         this.$router.push("/riwayat-donasi");
+      },
+      onUbahClick() {
+        this.$router.push("/pilih-nominal-donasi");
       },
     },
   });
