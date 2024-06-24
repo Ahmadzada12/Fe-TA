@@ -1,13 +1,25 @@
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
-      <div class="text-3xl font-bold">Kategori</div>
+      <div class="text-3xl font-bold">Donasi</div>
     </div>
     <div>
       <n-form>
-        <n-form-item label="Judul Kategori">
+        <n-form-item label="Judul Donasi">
           <n-input />
         </n-form-item>
+        <div class="flex flex-row">
+          <div class="w-1/2 mr-4">
+            <n-form-item label="Kategori">
+            <n-select />
+          </n-form-item>
+          </div>
+          <div class="w-1/2">
+            <n-form-item label="Donasi Target">
+          <n-input />
+            </n-form-item>
+          </div>
+        </div>
         <n-form-item label="Content">
           <n-input type="textarea" />
         </n-form-item>

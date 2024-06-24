@@ -30,7 +30,7 @@ const menuOptions = computed(() => [
   {
     label: "Laporan",
     icon: renderIcon(DocumentOutline),
-    key: "/admin/category",
+    key: "/admin/laporan",
   },
   {
     label: "Donasi",

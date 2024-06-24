@@ -1,18 +1,12 @@
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
-      <div class="text-3xl font-bold">Berita</div>
+      <div class="text-3xl font-bold">Kategori</div>
     </div>
     <div>
       <n-form>
-        <n-form-item label="Judul Berita">
+        <n-form-item label="Judul Kategori">
           <n-input />
-        </n-form-item>
-        <n-form-item label="Kategori">
-          <n-select />
-        </n-form-item>
-        <n-form-item label="Donasi">
-          <n-select />
         </n-form-item>
         <n-form-item label="Content">
           <n-input type="textarea" />

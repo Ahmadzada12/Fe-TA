@@ -19,7 +19,7 @@ const params = ref({
 const data: Data[] = [
   {
     id: "1",
-    title: "Judul Berita 1",
+    title: "Judul Kategori 1",
   },
 ];
 
@@ -30,7 +30,7 @@ const columns: DataTableColumns<Data> = [
   },
   {
     key: "title",
-    title: "Judul Berita",
+    title: "Judul Kategori",
   },
   {
     key: "action",
@@ -42,10 +42,10 @@ const columns: DataTableColumns<Data> = [
           showModalDelete.value = true;
         },
         onEdit: () => {
-          router.push(`/admin/news/${data.id}/update`);
+          router.push(`/admin/category/${data.id}/update`);
         },
         onDetail: () => {
-          router.push(`/admin/news/${data.id}/detail`);
+          router.push(`/admin/category/${data.id}/detail`);
         },
       });
     },
@@ -60,11 +60,11 @@ const onDelete = () => {
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
-      <div class="text-3xl font-bold">Berita</div>
+      <div class="text-3xl font-bold">Kategori</div>
       <div>
-        <n-button type="primary" @click="router.push('/admin/news/create')">
+        <n-button type="primary" @click="router.push('/admin/category/create')">
           <i-mdi-plus />
-          Add Berita
+          Add Kategori
         </n-button>
       </div>
     </div>

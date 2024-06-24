@@ -1,8 +1,20 @@
 <template>
   <div class="space-y-5">
     <div class="space-y-5">
-      <n-h2> Kategori 1 </n-h2>
-      <div class="w-64">
+      <n-h2> Donasi 1 </n-h2>
+      <div class="space-y-4">
+        <div class="flex flex-row items-center justify-end">
+          <div class="mr-5">Rp.6.000.000/Rp.10.000.000</div>
+          <n-button>Tarik Donation</n-button>
+        </div>
+        <n-progress
+          type="line"
+          :percentage="60"
+          :indicator-placement="'inside'"
+          processing
+        />
+      </div>
+      <div class="w-1/2">
         <img
           class="w-full block"
           src="https://news.itsfoss.com/content/images/size/w1000/2024/06/GitButler_2.png"
@@ -30,3 +42,20 @@
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  setup() {
+    return {
+      value: 50,
+    };
+  },
+  data() {
+    return {
+      value: 50,
+    };
+  },
+});
+</script>
