@@ -100,14 +100,14 @@
           >
         </div>
         <a
-          class="[text-decoration:none] relative text-[inherit] inline-block min-w-[64px]"
-          >Donasi</a
+          class="[text-decoration:none] relative text-[inherit] inline-block min-w-[64px] cursor-pointer"
+         @click="onDonasiClick" >Donasi</a
         >
         <div
           class="w-[62px] flex flex-col items-start justify-start py-0 pr-1 pl-0 box-border"
         >
-          <a class="[text-decoration:none] self-stretch relative text-[inherit]"
-            >News</a
+          <a class="[text-decoration:none] self-stretch relative text-[inherit] cursor-pointer"
+          @click="onNewsClick"  >News</a
           >
         </div>
         <a
@@ -121,7 +121,8 @@
     >
       <div class="self-stretch h-9 relative">
         <img
-          class="absolute top-[0px] left-[0px] w-9 h-9 overflow-hidden object-cover"
+          class="absolute top-[0px] left-[0px] w-9 h-9 overflow-hidden object-cover cursor-pointer"
+          @click="onProfileClick"
           loading="lazy"
           alt=""
           src="/defaultavatarpng2@2x.png"
@@ -141,6 +142,13 @@
     methods: {
       onHomeTextClick() {
         this.$router.push("/");
+      },
+      onDonasiClick() {
+        this.$router.push("/donasi");
+      },onNewsClick() {
+        this.$router.push("/berita");
+      },onProfileClick() {
+        this.$router.push("/profile");
       },
     },
   });

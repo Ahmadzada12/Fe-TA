@@ -13,6 +13,8 @@ import "./global.css";
 import login from "./pages/login.vue";
 import PilihNominalDonasi from "./components/pilih-nominal-donasi.vue";
 import Register from "./pages/register.vue";
+import Profil from "./pages/profil.vue";
+import axios from "axios";
 interface Route {
   path: string;
   name: string;
@@ -75,6 +77,11 @@ const routes: Route[] = [
     name: "PilihNominalDonasi",
     component: PilihNominalDonasi,
   },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profil,
+  },
 ];
 
 const router = createRouter({
@@ -99,6 +106,12 @@ const addMetaTag = (value: string) => {
     element.setAttribute("content", value);
   }
 };
+
+const app = createApp(App);
+
+// Konfigurasi Axios
+axios.defaults.baseURL = "http://localhost:3000"; // Ganti sesuai URL backend Anda
+app.config.globalProperties.$http = axios;
 
 createApp(App).use(router).mount("#app");
 

@@ -4,37 +4,40 @@
   >
     <section class="w-1/2 py-10 px-10 h-full">
       <div class="mb-16">
-        <div class="text-5xl font-bold font-poppins">Welcome Back 👋</div>
+        <div class="text-5xl font-bold font-poppins">Welcome 👋</div>
         <div class="text-white">We are happy to have you back</div>
       </div>
-      <form class="space-y-3">
+      <form class="space-y-3" @submit.prevent="onLoginClick">
         <div class="w-full space-y-3">
-          <FormItem id="email" label="email" class="w-11/12">
-            <Input
+          <div class="w-11/12">
+            <label for="email" class="block text-white text-sm font-bold mb-2">Email</label>
+            <input
+              v-model="email"
               id="email"
               type="email"
-              color="default"
               placeholder="Enter your Email"
-              class="w-full"
+              class="w-full px-3 py-2 border rounded"
+              required
             />
-          </FormItem>
-          <FormItem id="password" label="password" class="w-11/12">
-            <Input
+          </div>
+          <div class="w-11/12">
+            <label for="password" class="block text-white text-sm font-bold mb-2">Password</label>
+            <input
+              v-model="password"
               id="password"
               type="password"
-              color="default"
               placeholder="Enter your password"
-              class="w-full"
+              class="w-full px-3 py-2 border rounded"
+              required
             />
-          </FormItem>
-          <div class="w-full flex justify-center">
-            <Button class="block mt-5 w-11/12 cursor-pointer"  color="primary" @click="onLoginClick">Login</Button>
           </div>
-          <hr class="border-t border-white-200 my-5 w-11/12" />
-          <div
-            class="w-full text-center cursor-pointer"
-            @click="onRegisterClick"
-          >
+          <div class="w-11/12 flex justify-center">
+            <button type="submit" class="block mt-5 w-11/12 cursor-pointer bg-primary text-white py-2 rounded">
+              Login
+            </button>
+          </div>
+          <hr class="border-t border-white-600 my-5 w-full"/>
+          <div class="w-11/12 text-center cursor-pointer " @click="onRegisterClick">
             Register
           </div>
         </div>
@@ -48,21 +51,44 @@
   </main>
 </template>
 
+
 <script lang="ts">
 import { defineComponent } from "vue";
-import Button from "../components/button.vue";
-import Input from "../components/input.vue";
-import FormItem from "../components/form-input.vue";
+import axios from "axios";
 
 export default defineComponent({
   name: "Login",
-  components: { Button, Input, FormItem },
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
   methods: {
+    async onLoginClick() {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/v1/auth/sign-in",
+          {
+            email: this.email,
+            password: this.password,
+          }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+          localStorage.setItem("token", response.data.token);
+          this.$router.push("/");
+        } else {
+          console.error("Login failed:", response.data.message);
+          alert("Login failed: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
+        alert("Error during login: " + error.message);
+      }
+    },
     onRegisterClick() {
       this.$router.push("/Register");
-    },
-    onLoginClick() {
-      this.$router.push("/");
     },
   },
 });
