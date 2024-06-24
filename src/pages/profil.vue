@@ -3,48 +3,55 @@
     <div class="mx-auto p-4">
       <!-- Tombol Back -->
       <button @click="goBack" class="back-button flex items-center mb-4">
-        <img alt="Back" class="w-5 h-5 mr-2" />
+        <img src="" alt="Back" class="w-5 h-5 mr-2" />
         Kembali
       </button>
       <h2 class="text-2xl font-bold mb-4">Profil Pengguna</h2>
       <div class="bg-white shadow-md rounded-lg p-6">
-        <div class="mb-4 flex justify-between">
+        <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-            Nama
+            Username
           </label>
-          <p>{{ userProfile.username }}</p>
+          <input v-model="userProfile.username" type="text" id="name" class="input-field" />
         </div>
-        <div class="mb-4 flex justify-between">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
+            Nama Lengkap
+          </label>
+          <input v-model="userProfile.fullName" type="text" id="fullName" class="input-field" />
+        </div>
+        <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
             Email
           </label>
-          <p>{{ userProfile.email }}</p>
+          <input v-model="userProfile.email" type="email" id="email" class="input-field" />
         </div>
-        <div class="mb-4 flex justify-between">
+        <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="telp">
             Nomor Telepon
           </label>
-          <p>{{ userProfile.phone }}</p>
+          <input v-model="userProfile.phone" type="tel" id="telp" class="input-field" />
         </div>
-        <div class="mb-4 flex justify-between">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="alamat"
-          >
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="alamat">
             Alamat
           </label>
-          <p>{{ userProfile.alamat }}</p>
+          <input v-model="userProfile.alamat" type="text" id="alamat" class="input-field" />
         </div>
+        <button @click="saveChanges" class="save-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Simpan Perubahan
+        </button>
       </div>
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from "axios";
 
 export default defineComponent({
-  name: "profil",
+  name: "Profil",
   data() {
     return {
       userProfile: {
@@ -52,6 +59,7 @@ export default defineComponent({
         email: "",
         phone: "",
         alamat: "",
+        fullName: "",
       },
     };
   },
@@ -59,12 +67,17 @@ export default defineComponent({
     async fetchUserProfile() {
       try {
         const token = localStorage.getItem("token"); // Ambil token dari localStorage jika ada
-        const userId = "f61c763a-9fb5-4cc8-baac-24664a63eb5a"; // ID pengguna yang akan Anda ambil datanya
+        const id = localStorage.getItem("id");
+        if (!token || !id) {
+          console.error("No token or id found");
+          return;
+        }
+
         const response = await axios.get(
-          `http://localhost:3000/v1/user/f61c763a-9fb5-4cc8-baac-24664a63eb5a`,
+          `http://localhost:3001/v1/user/${id}`,
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFubmFuYWhudTE1QGdtYWlsLmNvbSIsImlkIjoiZjYxYzc2M2EtOWZiNS00Y2M4LWJhYWMtMjQ2NjRhNjNlYjVhIiwibmFtZSI6Ikpva29pc2thbmRhciIsImlhdCI6MTcxODk4MTY3NSwiZXhwIjoxNzE5NTg2NDc1fQ.7rkDnKqTWifIxZPWgxtn682zRmsCUiil4hia1gxGQOk`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -79,6 +92,35 @@ export default defineComponent({
         console.error("Error fetching user profile:", error);
       }
     },
+    async saveChanges() {
+      try {
+        const token = localStorage.getItem("token"); // Ambil token dari localStorage jika ada
+        const id = localStorage.getItem("id");
+        if (!token || !id) {
+          console.error("No token or id found");
+          return;
+        }
+
+        const response = await axios.put(
+          `http://localhost:3001/v1/user/${id}`,
+          this.userProfile,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("Profile updated successfully");
+          // Optional: Show success message or redirect to another page
+        } else {
+          console.error("Failed to update user profile:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error updating user profile:", error);
+      }
+    },
     goBack() {
       this.$router.push("/riwayat-donasi");
     },
@@ -88,26 +130,17 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 .profil-page {
   padding: 20px;
 }
 
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.bg-white {
-  background-color: white;
-}
-
-.flex {
-  display: flex;
-}
-
-.justify-between {
-  justify-content: space-between;
+.input-field {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .back-button {
@@ -118,6 +151,10 @@ export default defineComponent({
   display: flex;
   align-items: center;
   font-weight: bold;
+}
+
+.save-button {
+  margin-top: 10px;
 }
 
 .back-button img {

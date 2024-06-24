@@ -1,7 +1,5 @@
 <template>
-  <main
-    class="flex justify-center bg-foreground-primary text-white min-h-screen"
-  >
+  <main class="flex justify-center bg-foreground-primary text-white min-h-screen">
     <section class="w-1/2 py-10 px-10 h-full">
       <div class="mb-16">
         <div class="text-5xl font-bold font-poppins">Welcome 👋</div>
@@ -37,7 +35,7 @@
             </button>
           </div>
           <hr class="border-t border-white-600 my-5 w-full"/>
-          <div class="w-11/12 text-center cursor-pointer " @click="onRegisterClick">
+          <div class="w-11/12 text-center cursor-pointer" @click="onRegisterClick">
             Register
           </div>
         </div>
@@ -50,7 +48,6 @@
     </section>
   </main>
 </template>
-
 
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -67,16 +64,16 @@ export default defineComponent({
   methods: {
     async onLoginClick() {
       try {
-        const response = await axios.post(
-          "http://localhost:3000/v1/auth/sign-in",
-          {
-            email: this.email,
-            password: this.password,
-          }
-        );
+        const response = await axios.post("http://localhost:3001/v1/auth/sign-in", {
+          email: this.email,
+          password: this.password,
+        });
 
         if (response.status === 200 || response.status === 201) {
-          localStorage.setItem("token", response.data.token);
+          // Save token to localStorage
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("id", response.data.data.user.id )
+          console.log("Login successful:", response.data.data.user);
           this.$router.push("/");
         } else {
           console.error("Login failed:", response.data.message);

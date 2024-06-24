@@ -116,7 +116,7 @@ export default defineComponent({
   methods: {
     async onRegisterClick() {
       try {
-        const response = await axios.post("http://localhost:3000/v1/auth/sign-up", {
+        const response = await axios.post("http://localhost:3001/v1/auth/sign-up", {
           email: this.email,
           password: this.password,
           fullName: this.fullName,
