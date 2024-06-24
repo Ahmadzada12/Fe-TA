@@ -14,28 +14,28 @@ function renderIcon(icon: Component) {
 const menuOptions = computed(() => [
   {
     label: "Dashboard",
-    key: "/dashboard",
+    key: "/admin/dashboard",
     icon: renderIcon(HomeOutline),
   },
   {
     label: "Berita",
-    key: "/management",
+    key: "/admin/news",
     icon: renderIcon(PeopleOutline),
   },
   {
     label: "Kategori",
     icon: renderIcon(DocumentOutline),
-    key: "/category",
+    key: "/admin/category",
   },
   {
     label: "Laporan",
     icon: renderIcon(DocumentOutline),
-    key: "/category",
+    key: "/admin/category",
   },
   {
     label: "Donasi",
     icon: renderIcon(LayersOutline),
-    key: "/donation",
+    key: "/admin/donation",
   },
 ]);
 
@@ -83,9 +83,7 @@ const options = [
             <div class="flex justify-end items-center h-16 px-5">
               <div>
                 <n-dropdown :options="options" @select="(v) => $router.push(v)">
-                  <n-button class="primary !text-white">{{
-                    data?.data.name
-                  }}</n-button>
+                  <n-button text color="#000">MyName</n-button>
                 </n-dropdown>
               </div>
             </div>

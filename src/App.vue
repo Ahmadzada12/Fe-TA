@@ -8,10 +8,12 @@
       common: {
         borderRadius: '12px',
         primaryColor: '#044D43',
+        heightHuge: '45px',
+        heightMedium: '45px',
       },
       Button: {
         heightMedium: '40px',
-      }
+      },
     }"
   >
     <router-view />
