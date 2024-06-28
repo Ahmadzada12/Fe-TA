@@ -16,6 +16,8 @@
       },
     }"
   >
-    <router-view />
+    <n-message-provider>
+      <router-view />
+    </n-message-provider>
   </n-config-provider>
 </template>

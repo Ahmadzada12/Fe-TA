@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from "vue-router/auto";
 import App from "./App.vue";
 
 import "./global.css";
+import { VueQueryPlugin } from "@tanstack/vue-query";
 
 interface Route {
   path: string;
@@ -36,6 +37,6 @@ const addMetaTag = (value: string) => {
   }
 };
 
-createApp(App).use(router).mount("#app");
+createApp(App).use(router).use(VueQueryPlugin).mount("#app");
 
 export default router;

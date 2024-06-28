@@ -1,10 +1,27 @@
+<script setup lang="ts">
+import { useHttpMutation } from "@/composables/http/http";
+
+type Data = {
+  title?: string;
+};
+
+const formData = ref<Data>({});
+
+const { mutate } = useHttpMutation("admin/news/create", {
+  method: "POST",
+});
+
+const onSubmit = () => {
+  mutate(formData.value);
+};
+</script>
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="text-3xl font-bold">Berita</div>
     </div>
     <div>
-      <n-form>
+      <n-form ref="form" :model="formData" @submit.prevent="onSubmit">
         <n-form-item label="Judul Berita">
           <n-input />
         </n-form-item>

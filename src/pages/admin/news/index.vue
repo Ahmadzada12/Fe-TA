@@ -2,6 +2,7 @@
 import { DataTableColumns } from "naive-ui";
 import Action from "./_components/actions.vue";
 import { pageSelection } from "@/constants/opt";
+import { useHttp, useHttpMutation } from "@/composables/http/http";
 
 type Data = {
   id: string;
@@ -9,6 +10,7 @@ type Data = {
 };
 
 const router = useRouter();
+const selectedId = ref<string>();
 const showModalDelete = ref<boolean>(false);
 
 const params = ref({
@@ -16,12 +18,27 @@ const params = ref({
   limit: 10,
 });
 
-const data: Data[] = [
+type Response = {
+  data: {
+    data: Data[];
+    total: number;
+  };
+};
+
+const { data: news, isLoading } = useHttp<Response>("admin/news", {
+  params,
+});
+
+const { mutate } = useHttpMutation(
+  computed(() => `admin/news/${selectedId.value}`),
   {
-    id: "1",
-    title: "Judul Berita 1",
+    method: "DELETE",
   },
-];
+);
+
+const data = computed(() => {
+  return news.value?.data?.data || [];
+});
 
 const columns: DataTableColumns<Data> = [
   {
@@ -39,6 +56,7 @@ const columns: DataTableColumns<Data> = [
     render(data) {
       return h(Action, {
         onDelete: () => {
+          selectedId.value = data.id;
           showModalDelete.value = true;
         },
         onEdit: () => {
@@ -54,6 +72,7 @@ const columns: DataTableColumns<Data> = [
 
 const onDelete = () => {
   showModalDelete.value = false;
+  mutate({});
 };
 </script>
 
@@ -68,7 +87,7 @@ const onDelete = () => {
         </n-button>
       </div>
     </div>
-    <n-data-table :columns="columns" :data="data" />
+    <n-data-table :columns="columns" :data="data" :loading="isLoading" />
     <div class="flex justify-between">
       <div class="flex gap-5 items-center justify-center">
         Show
