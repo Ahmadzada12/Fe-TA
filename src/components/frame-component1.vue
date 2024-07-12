@@ -12,7 +12,7 @@
           class="w-[73.8px] box-border flex flex-row items-start justify-start pt-[7.8px] px-2 pb-[7px] shrink-0 [debug_commit:bf4bc93] border-b-[1px] border-solid border-whitesmoke-600"
         >
           <b class="relative leading-[21px] font-bold inline-block min-w-[15px]"
-            >ID</b
+            >##</b
           >
         </div>
         <div
@@ -69,13 +69,7 @@
       <div
         class="self-stretch flex flex-row flex-wrap items-start justify-start max-w-full [row-gap:20px] text-sm-5"
       >
-        <div
-          class="w-[73.8px] box-border flex flex-row items-start justify-start pt-[18.8px] px-2 pb-[18px] shrink-0 [debug_commit:bf4bc93] border-b-[1px] border-solid border-whitesmoke-600"
-        >
-          <div class="relative leading-[21px] inline-block min-w-[38px]">
-            82441
-          </div>
-        </div>
+       
         <div
           class="w-[306.1px] box-border flex flex-row items-start justify-start pt-[18.8px] px-2 pb-[18px] shrink-0 [debug_commit:bf4bc93] text-sm-6 text-darkslategray-200 border-b-[1px] border-solid border-whitesmoke-600"
         >

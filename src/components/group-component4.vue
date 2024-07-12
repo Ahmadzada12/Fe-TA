@@ -22,7 +22,7 @@
                 <img
                   class="h-[59.1px] w-[63px] relative object-cover z-[2]"
                   alt=""
-                  src="/pexelsrocketmannteam94869051-2@2x.png"
+                  src="/Logo_UNS.png"
                 />
                 <div
                   class="flex-1 flex flex-col items-start justify-end pt-0 px-0 pb-[11.1px]"
@@ -32,16 +32,7 @@
                   >
                     <div
                       class="self-stretch flex flex-row items-start justify-start py-0 pr-2 pl-[9px]"
-                    >
-                      <b class="flex-1 relative uppercase font-bold z-[1]"
-                        >tidak bisa</b
-                      >
-                    </div>
-                    <div
-                      class="relative text-4xs-6 tracking-[0.2em] uppercase font-medium text-white z-[1]"
-                    >
-                      uang kalian, kami tilep
-                    </div>
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -49,59 +40,13 @@
                 class="self-stretch flex flex-row items-start justify-start py-0 pr-0 pl-[3px] text-base text-lightgray-300 font-source-sans-pro"
               >
                 <p class="m-0 flex-1 relative z-[1]">
-                  Fundly is dedicated to providing you with the tools you need
-                  to raise money for whatever your cause may be.
+                  Dedikasi kami adalah memberikan Anda segala yang Anda perlukan
+                  untuk mengumpulkan dana untuk tujuan apapun yang Anda pilih.
                 </p>
               </div>
             </div>
           </div>
-          <div
-            class="w-[264.5px] flex flex-col items-start justify-start gap-[16.8px]"
-          >
-            <h3
-              class="m-0 w-[119.5px] relative text-inherit uppercase font-normal font-inherit inline-block z-[1] mq450:text-lg"
-            >
-              About Us
-            </h3>
-            <div
-              class="self-stretch flex flex-row items-start justify-start gap-[38.8px] text-base text-lightgray-300 mq450:gap-[19px]"
-            >
-              <div
-                class="flex-1 flex flex-col items-start justify-start gap-[8.4px]"
-              >
-                <div class="self-stretch relative z-[1]">Fundraising Ideas</div>
-                <a
-                  class="[text-decoration:none] relative text-[inherit] inline-block min-w-[50.1px] z-[1]"
-                  >Pricing</a
-                >
-                <a
-                  class="[text-decoration:none] relative text-[inherit] inline-block min-w-[102.1px] z-[1]"
-                  >Privacy Policy</a
-                >
-                <a
-                  class="[text-decoration:none] relative text-[inherit] inline-block min-w-[67.4px] z-[1]"
-                  >About Us</a
-                >
-                <div class="relative inline-block min-w-[57.2px] z-[1]">
-                  Support
-                </div>
-              </div>
-              <div class="flex flex-col items-start justify-start gap-[8.4px]">
-                <div class="relative inline-block min-w-[32.7px] z-[1]">
-                  Blog
-                </div>
-                <div class="relative inline-block min-w-[96px] z-[1]">
-                  Terms of Use
-                </div>
-                <a
-                  class="[text-decoration:none] w-[32.7px] relative text-[inherit] inline-block z-[1]"
-                  >FAQ</a
-                >
-                <div class="w-[40.9px] relative inline-block z-[1]">Sales</div>
-                <div class="w-[41.9px] relative inline-block z-[1]">Press</div>
-              </div>
-            </div>
-          </div>
+         
           <div
             class="w-[270.3px] flex flex-col items-start justify-start gap-[20px]"
           >
@@ -238,15 +183,15 @@
       class="self-stretch flex flex-row items-start justify-center py-0 pr-5 pl-[26px] text-center text-base text-lightgray-300"
     >
       <div class="w-[169.6px] relative inline-block shrink-0 z-[1]">
-        Copyright © Fundly 2023
+        Copyright © 2024
       </div>
     </div>
   </footer>
 </template>
 <script lang="ts">
-  import { defineComponent } from "vue";
+import { defineComponent } from "vue";
 
-  export default defineComponent({
-    name: "GroupComponent4",
-  });
+export default defineComponent({
+  name: "GroupComponent4",
+});
 </script>

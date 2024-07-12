@@ -16,20 +16,20 @@
       class="flex flex-col items-start justify-start pt-[9px] pb-0 pr-1.5 pl-0"
     >
       <a
-        class="[text-decoration:none] relative text-[inherit] inline-block min-w-[58px]"
-        >Home</a
+        class="[text-decoration:none] relative text-[inherit] inline-block min-w-[58px] cursor-pointer"
+       @click="onHomeClick" >Home</a
       >
     </div>
     <div class="flex flex-col items-start justify-start pt-[9px] px-0 pb-0">
-      <div class="relative inline-block min-w-[64px]">Donasi</div>
+      <div class="relative inline-block min-w-[64px] cursor-pointer" @click="onDonasiClick">Donasi</div>
     </div>
     <div
       class="w-[62px] flex flex-col items-start justify-start pt-[9px] pb-0 pr-1 pl-0 box-border text-lightseagreen-200"
     >
-      <div class="self-stretch relative">News</div>
+      <div class="self-stretch relative">Berita</div>
     </div>
     <div class="flex flex-col items-start justify-start pt-[9px] px-0 pb-0">
-      <div class="relative whitespace-nowrap">Riwayat Donasi</div>
+      <div class="relative whitespace-nowrap cursor-pointer" @click="onRiwayatDonasiClick">Riwayat Donasi</div>
     </div>
   </header>
 </template>
@@ -38,5 +38,16 @@
 
   export default defineComponent({
     name: "BackgroundShadow1",
+    methods:{
+      onHomeClick() {
+        this.$router.push("/");
+      },
+      onDonasiClick() {
+        this.$router.push("/donasi");
+      },
+      onRiwayatDonasiClick() {
+        this.$router.push("/riwayat-donasi");
+      },
+    }
   });
 </script>

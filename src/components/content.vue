@@ -3,6 +3,7 @@
     class="w-[1309px] flex flex-row items-start justify-center pt-0 px-5 pb-11 box-border max-w-full text-center text-11xl text-black font-roboto mq750:pb-5 mq750:box-border mq1050:pb-[29px] mq1050:box-border"
   >
     <div
+      :key="donation.id"
       class="w-[1141px] flex flex-col items-start justify-start gap-[60.9px] max-w-full mq750:gap-[15px] mq1225:gap-[30px]"
     >
       <header
@@ -88,7 +89,7 @@
             <h2
               class="m-0 relative text-inherit leading-[60px] uppercase font-bold font-inherit mq750:text-5xl mq750:leading-[48px] mq450:text-lg mq450:leading-[36px]"
             >
-              donate & Help kids!
+              {{ donation.title }}
             </h2>
           </div>
           <section
@@ -109,10 +110,7 @@
                     <p
                       class="m-0 absolute top-[88.3px] left-[77.7px] inline-block w-[439.7px] h-[74px]"
                     >
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry. Lorem Ipsum has beenLorem Ipsum is
-                      simply dummy text of the printing and typesetting
-                      industry. Lorem Ipsum has been
+                      
                     </p>
                     <img
                       class="absolute top-[0px] left-[0px] w-full h-full object-cover mix-blend-luminosity z-[1]"
@@ -129,7 +127,7 @@
                     />
                     <div
                       class="self-stretch rounded bg-lightseagreen-200 flex flex-row items-start justify-start py-0 pr-[72px] pl-[73px] z-[1] border-[1px] border-solid border-gray-800 mq450:pl-5 mq450:pr-5 mq450:box-border cursor-pointer"
-                      @click="onPilihNominalTextClick"
+                      @click="onPilihNominalTextClick(donation.id)"
                     >
                       <div
                         class="h-[62px] w-[279px] relative rounded bg-lightseagreen-200 box-border hidden border-[1px] border-solid border-gray-800"
@@ -156,7 +154,7 @@
                           <div
                             class="relative text-base uppercase font-roboto-condensed text-darkslategray-300 inline-block min-w-[57px] z-[1]"
                           >
-                            Donors
+                            Donasi
                           </div>
                         </div>
                       </div>
@@ -169,11 +167,11 @@
                           <div
                             class="self-stretch relative leading-[45px] whitespace-nowrap z-[1] mq750:text-17xl mq750:leading-[36px] mq450:text-8xl mq450:leading-[27px]"
                           >
-                            Rp9,850
+                            Rp. {{ donation.donationCollected }}
                           </div>
                           <a
                             class="[text-decoration:none] w-[53px] relative text-base uppercase font-roboto-condensed text-[inherit] inline-block z-[1]"
-                            >Raised</a
+                            >Tercapai</a
                           >
                         </div>
                       </div>
@@ -204,7 +202,7 @@
                             <div
                               class="flex-1 relative whitespace-nowrap z-[1]"
                             >
-                              Rp. 100.000.000
+                              Rp. {{ donation.donationTarget }}
                             </div>
                           </div>
                           <div class="flex flex-row items-start justify-start">
@@ -216,7 +214,7 @@
                             <div
                               class="relative inline-block min-w-[16px] z-[1]"
                             >
-                              57
+                              {{ daysLeft }}
                             </div>
                           </div>
                         </div>
@@ -228,11 +226,7 @@
               <div
                 class="w-[444px] flex flex-row flex-wrap items-start justify-start gap-[14px] max-w-full text-15xl text-black font-roboto"
               >
-                <h1
-                  class="m-0 flex-1 relative text-inherit leading-[60px] uppercase font-bold font-inherit inline-block min-w-[243px] max-w-full mq750:text-8xl mq750:leading-[48px] mq450:text-xl mq450:leading-[36px]"
-                >
-                  donate & Help kids!
-                </h1>
+              
                 <div
                   class="w-14 flex flex-col items-start justify-start pt-2.5 px-0 pb-0 box-border text-xl-2 text-white font-montserrat"
                 >
@@ -329,10 +323,61 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
+import { computed, defineComponent, onMounted, ref } from "vue";
+import axios from "axios";
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "Content",
+  setup() {
+    const donation = ref({});
+    const route = useRoute();
+    const donationId = route.params.id;
+    const apiBaseUrl = import.meta.env.VITE_APP_API_BASE_URL
+
+    const fetchDonationDetail = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found in local storage");
+        }
+        console.log(donationId); // Log the donationId to debug
+        const response = await axios.get(
+          `${apiBaseUrl}crowdfounding/${donationId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        donation.value = response.data.data;
+      } catch (error) {
+        console.error("Error fetching donation detail:", error);
+      }
+    };
+    const daysLeft = computed(() => {
+      if (
+        !donation.value.donationFinishedDate ||
+        !donation.value.donationStartDate
+      ) {
+        return 0;
+      }
+
+      const startDate = new Date(donation.value.donationStartDate);
+      const endDate = new Date(donation.value.donationFinishedDate);
+      const differenceInTime = endDate.getTime() - startDate.getTime();
+      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+      return Math.round(differenceInDays);
+    });
+    onMounted(() => {
+      fetchDonationDetail();
+    });
+
+    return {
+      donation,
+      daysLeft,
+    };
+  },
   methods: {
     onHomeTextClick() {
       this.$router.push("/");
@@ -346,8 +391,8 @@ export default defineComponent({
     onRiwayatDonasiTextClick() {
       this.$router.push("/riwayat-donasi");
     },
-    onPilihNominalTextClick() {
-      this.$router.push("/pilih-nominal-donasi");
+    onPilihNominalTextClick(donationId: string) {
+      this.$router.push(`/pilih-nominal-donasi/${donationId}`);
     },
     async onShareClick() {
       try {

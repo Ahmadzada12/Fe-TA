@@ -15,6 +15,7 @@ import PilihNominalDonasi from "./components/pilih-nominal-donasi.vue";
 import Register from "./pages/register.vue";
 import Profil from "./pages/profil.vue";
 import axios from "axios";
+
 interface Route {
   path: string;
   name: string;
@@ -38,12 +39,12 @@ const routes: Route[] = [
     component: Register,
   },
   {
-    path: "/donasi1",
-    name: "Donasi1",
+    path: '/donasi1/:id',
+    name: 'Donasi1',
     component: Donasi1,
   },
   {
-    path: "/berita1",
+    path: "/berita",
     name: "Berita",
     component: Berita,
   },
@@ -53,12 +54,12 @@ const routes: Route[] = [
     component: RiwayatDonasi,
   },
   {
-    path: "/berita",
+    path: "/berita1/:id",
     name: "Berita1",
     component: Berita1,
   },
   {
-    path: "/infodonatur",
+    path: "/infodonatur/:id",
     name: "InfoDonatur",
     component: InfoDonatur,
   },
@@ -68,12 +69,7 @@ const routes: Route[] = [
     component: Donasi,
   },
   {
-    path: "/pilih-nominal-donasi",
-    name: "PilihNominalDonasi",
-    component: PilihNominalDonasi,
-  },
-  {
-    path: "/pilih-nominal-donasi",
+    path: '/pilih-nominal-donasi/:id',
     name: "PilihNominalDonasi",
     component: PilihNominalDonasi,
   },
@@ -110,7 +106,7 @@ const addMetaTag = (value: string) => {
 const app = createApp(App);
 
 // Konfigurasi Axios
-axios.defaults.baseURL = "http://localhost:3000"; // Ganti sesuai URL backend Anda
+axios.defaults.baseURL = "http://localhost:3001"; // Ganti sesuai URL backend Anda
 app.config.globalProperties.$http = axios;
 
 createApp(App).use(router).mount("#app");

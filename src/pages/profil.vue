@@ -18,7 +18,7 @@
           <label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
             Nama Lengkap
           </label>
-          <input v-model="userProfile.fullName" type="text" id="fullName" class="input-field" />
+          <input v-model="userProfile.fullname" type="text" id="fullName" class="input-field" />
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
@@ -59,7 +59,7 @@ export default defineComponent({
         email: "",
         phone: "",
         alamat: "",
-        fullName: "",
+        fullname: "",
       },
     };
   },

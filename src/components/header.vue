@@ -21,7 +21,7 @@
                 class="h-[59.1px] w-[63px] relative object-cover"
                 loading="lazy"
                 alt=""
-                src="/pexelsrocketmannteam94869051-2@2x.png"
+                src="/Logo_UNS.png"
               />
               <div
                 class="flex-1 flex flex-col items-start justify-end pt-0 px-0 pb-[11.1px]"
@@ -32,16 +32,9 @@
                   <div
                     class="self-stretch flex flex-row items-start justify-start py-0 pr-2 pl-[9px]"
                   >
-                    <a
-                      class="[text-decoration:none] flex-1 relative uppercase font-bold text-[inherit] whitespace-nowrap"
-                      >tidak bisa</a
-                    >
+                   
                   </div>
-                  <div
-                    class="relative text-4xs-6 tracking-[0.2em] uppercase font-medium text-black whitespace-nowrap mq1325:hidden"
-                  >
-                    uang kalian, kami tilep
-                  </div>
+                
                 </div>
               </div>
             </div>
@@ -74,14 +67,13 @@
             </div>
           </div>
           <div
-            class="self-stretch bg-white flex flex-row items-start justify-start pt-[13.7px] px-[19px] pb-[14.2px] gap-[12px]"
+            class="self-stretch bg-white flex flex-row items-start justify-start pt-[13.7px] px-[19px] pb-[14.2px] gap-[12px] cursor-pointer"
+            @click="onSignOutClick"
           >
             <img class="h-5 w-5 relative" alt="" src="/svg-2.svg" />
-            <input
-              class="w-[39px] [border:none] [outline:none] font-roboto text-sm-7 bg-[transparent] h-[21px] relative leading-[21px] text-gray-300 text-left flex items-center p-0"
-              placeholder="Keluar"
-              type="text"
-            />
+            <div class="relative leading-[21px] inline-block min-w-[100px]">
+              Keluar
+            </div>
           </div>
         </div>
       </div>
@@ -101,19 +93,19 @@
         </div>
         <a
           class="[text-decoration:none] relative text-[inherit] inline-block min-w-[64px] cursor-pointer"
-         @click="onDonasiClick" >Donasi</a
-        >
+          @click="onDonasiClick"
+        >Donasi</a>
         <div
           class="w-[62px] flex flex-col items-start justify-start py-0 pr-1 pl-0 box-border"
         >
-          <a class="[text-decoration:none] self-stretch relative text-[inherit] cursor-pointer"
-          @click="onNewsClick"  >News</a
-          >
+          <a
+            class="[text-decoration:none] self-stretch relative text-[inherit] cursor-pointer"
+            @click="onNewsClick"
+          >News</a>
         </div>
         <a
           class="[text-decoration:none] relative text-lightseagreen-200 whitespace-nowrap"
-          >Riwayat Donasi</a
-        >
+        >Riwayat Donasi</a>
       </nav>
     </nav>
     <div
@@ -134,22 +126,43 @@
     </div>
   </header>
 </template>
-<script lang="ts">
-  import { defineComponent } from "vue";
 
-  export default defineComponent({
-    name: "Header",
-    methods: {
-      onHomeTextClick() {
-        this.$router.push("/");
-      },
-      onDonasiClick() {
-        this.$router.push("/donasi");
-      },onNewsClick() {
-        this.$router.push("/berita");
-      },onProfileClick() {
-        this.$router.push("/profile");
-      },
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from 'axios';
+export default defineComponent({
+  name: 'Header',
+  methods: {
+    onHomeTextClick() {
+      this.$router.push('/');
     },
-  });
+    onDonasiClick() {
+      this.$router.push('/donasi');
+    },
+    onNewsClick() {
+      this.$router.push('/berita');
+    },
+    onProfileClick() {
+      this.$router.push('/profile');
+    },
+    async onSignOutClick() {
+      try {
+        const token = localStorage.getItem('token'); // Assuming you are storing token in local storage
+        if (token) {
+          await axios.post('http://localhost:3001/v1/auth/sign-out', null, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          localStorage.removeItem('token'); // Clear token from storage
+          this.$router.push('/login'); // Redirect to login page
+        } else {
+          console.error('No token found');
+        }
+      } catch (error) {
+        console.error('Sign out error:', error);
+      }
+    },
+  },
+});
 </script>

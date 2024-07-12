@@ -21,7 +21,7 @@
           <div class="w-11/12 mx-auto">
             <label for="fullName" class="block text-sm font-medium text-white">Full Name</label>
             <input
-              v-model="fullName"
+              v-model="fullname"
               id="fullName"
               type="text"
               placeholder="Enter your Full Name"
@@ -76,7 +76,7 @@
           <div class="w-full mx-auto flex justify-center">
             <button
               type="submit"
-              class="w-11/12 mt-5 py-3 bg-primary text-white rounded-lg"
+              class="w-11/12 mt-5 py-3 bg-primary text-white rounded-lg cursor-pointer"
             >Register</button>
           </div>
           <hr class="w-full mx-auto border-t border-gray-200 my-5" />
@@ -106,7 +106,7 @@ export default defineComponent({
   data() {
     return {
       username: "",
-      fullName: "",
+      fullname: "",
       email: "",
       password: "",
       phone: "",
@@ -119,7 +119,7 @@ export default defineComponent({
         const response = await axios.post("http://localhost:3001/v1/auth/sign-up", {
           email: this.email,
           password: this.password,
-          fullName: this.fullName,
+          fullname: this.fullname,
           username: this.username,
           phone: this.phone,
           alamat: this.alamat,

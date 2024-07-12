@@ -1,6 +1,6 @@
 <template>
   <header
-    class="self-stretch shadow-[0px_4px_6px_-1px_rgba(0,_0,_0,_0.07)] bg-white overflow-hidden flex flex-row items-start justify-start pt-[5px] px-[60px] pb-[5.9px] box-border top-[0] z-[99] sticky max-w-full text-left text-lg text-black font-montserrat lg:pl-[30px] lg:pr-[30px] lg:box-border"
+    class="navbar self-stretch sticky shadow-[0px_4px_6px_-1px_rgba(0,_0,_0,_0.07)] bg-white overflow-hidden flex flex-row items-start justify-start pt-[5px] px-[60px] pb-[5.9px] box-border top-[0] z-[99] max-w-full text-left text-lg text-black font-montserrat lg:pl-[30px] lg:pr-[30px] lg:box-border"
   >
     <img
       class="ml-[-63px] h-[59.1px] w-[63px] relative object-cover"
@@ -53,26 +53,48 @@
             Home
           </div>
         </div>
-        <div class="relative text-lightseagreen-200 inline-block min-w-[64px]">
+        <div
+          class="relative text-lightseagreen-200 inline-block min-w-[64px] cursor-pointer"
+          @click="onDonasiClick"
+        >
           Donasi
         </div>
-        <div class="w-[58px] relative inline-block shrink-0">News</div>
+        <div
+          class="w-[58px] relative inline-block shrink-0 cursor-pointer"
+          @click="onBeritaClick"
+        >
+          berita
+        </div>
       </div>
     </div>
     <div class="flex flex-col items-start justify-start pt-[19px] px-0 pb-0">
-      <div class="relative whitespace-nowrap">Riwayat Donasi</div>
+      <div
+        class="relative whitespace-nowrap cursor-pointer"
+        @click="onRiwayatDonasiClick"
+      >
+        Riwayat Donasi
+      </div>
     </div>
   </header>
 </template>
 <script lang="ts">
-  import { defineComponent } from "vue";
+import { defineComponent } from "vue";
 
-  export default defineComponent({
-    name: "BackgroundShadow",
-    methods: {
-      onHomeTextClick() {
-        this.$router.push("/");
-      },
+export default defineComponent({
+  name: "BackgroundShadow",
+  methods: {
+    onHomeTextClick() {
+      this.$router.push("/");
     },
-  });
+    onDonasiClick() {
+      this.$router.push("/donasi");
+    },
+    onBeritaClick() {
+      this.$router.push("/berita");
+    },
+    onRiwayatDonasiClick() {
+      this.$router.push("/riwayat-donasi");
+    },
+  },
+});
 </script>

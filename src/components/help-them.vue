@@ -11,8 +11,7 @@
       class="flex flex-col items-start justify-start pt-[12.2px] px-0 pb-0 box-border min-w-[633px] max-w-full lg:flex-1 mq1050:min-w-full"
     >
       <b class="relative z-[1] mq450:text-15xl mq1050:text-27xl">
-        <p class="m-0">Help them whenever</p>
-        <p class="m-0">they are in need</p>
+        <p class="m-0">Selalu membantu mereka ketika mereka membutuhkan</p>
       </b>
     </div>
     <div

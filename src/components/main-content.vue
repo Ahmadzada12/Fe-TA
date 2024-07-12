@@ -9,10 +9,10 @@
         class="h-[59.1px] w-[63px] relative object-cover"
         loading="lazy"
         alt=""
-        src="/pexelsrocketmannteam94869051-2@2x.png"
+        src="/Logo_UNS.png"
       />
       <div
-        class="flex-1 flex flex-col items-start justify-end pt-0 px-0 pb-[11.1px]"
+        class="flex-1 w-[173.9px] flex flex-col items-start justify-end pt-0 px-0 pb-[11.1px]"
       >
         <div
           class="self-stretch flex flex-col items-start justify-start gap-[1px]"
@@ -20,15 +20,12 @@
           <nav
             class="m-0 self-stretch flex flex-row items-start justify-start py-0 pr-2 pl-[9px] text-left text-lgi-5 text-lightseagreen-200 font-montserrat mq750:hidden"
           >
-            <a
-              class="[text-decoration:none] flex-1 relative uppercase font-bold text-[inherit] whitespace-nowrap z-[1]"
-              >tidak bisa</a
-            >
+            
           </nav>
           <div
             class="relative tracking-[0.2em] uppercase font-medium whitespace-nowrap z-[1] mq450:hidden"
           >
-            uang kalian, kami tilep
+           
           </div>
         </div>
       </div>

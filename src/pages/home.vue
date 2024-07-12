@@ -48,22 +48,16 @@
           <p
             class="m-0 h-[106px] flex-1 relative inline-block max-w-full z-[1] mq450:text-base"
           >
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has beenLorem Ipsum is simply dummy text of
-            the printing and typesetting industry. Lorem Ipsum has been
+          Galang dana untuk membantu mereka yang membutuhkan! Bersama-sama kita dapat memberikan perubahan yang positif dalam hidup orang lain.
           </p>
         </div>
       </div>
     </section>
-    <FrameComponent /><HelpThem /><GroupComponent
-      pexelsRocketmannTeam94869="/pexelsrocketmannteam94869051-2@2x.png"
-      group10="/group-10.svg"
-      group6="/group-6.svg"
-      group5="/group-5.svg"
-      group8="/group-8.svg"
-      group7="/group-7.svg"
-      group9="/group-9.svg"
-    />
+    <FrameComponent /><HelpThem /><div
+      class="self-stretch h-[339.5px] relative shrink-0 mq1050:h-auto mq1050:min-h-[339.5]"
+    >
+      <GroupComponent4 />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -71,10 +65,10 @@ import { defineComponent } from "vue";
 import MainContent from "../components/main-content.vue";
 import FrameComponent from "../components/frame-component.vue";
 import HelpThem from "../components/help-them.vue";
-import GroupComponent from "../components/group-component.vue";
+import GroupComponent4 from "../components/group-component4.vue";
 
 export default defineComponent({
   name: "Home",
-  components: { MainContent, FrameComponent, HelpThem, GroupComponent },
+  components: { MainContent, FrameComponent, HelpThem, GroupComponent4 },
 });
 </script>

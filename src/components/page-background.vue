@@ -33,14 +33,9 @@
         </div>
       </div>
       <div
-        class="w-[533.1px] flex flex-col items-start justify-end pt-0 px-0 pb-[7.1px] box-border max-w-full"
+        class="w-[333.1px] flex flex-col items-start justify-end pt-0 px-0 pb-[7.1px] box-border max-w-full"
       >
-        <img
-          class="w-[484.8px] relative max-h-full max-w-full"
-          loading="lazy"
-          alt=""
-          src="/form.svg"
-        />
+       
       </div>
       <nav
         class="m-0 flex flex-col items-start justify-end pt-0 px-0 pb-[16.1px] box-border max-w-full mq750:hidden"

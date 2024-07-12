@@ -1,16 +1,17 @@
 <template>
   <BackgroundShadow2 />
   <div
-    class="w-[1377px] h-[974px] [background:linear-gradient(#fff,_#fff),_#fff] max-w-full overflow-y-auto leading-[normal] tracking-[normal]"
+    class="w-[1377px] h-max [background:linear-gradient(#fff,_#fff),_#fff] max-w-full overflow-y-auto leading-[normal] tracking-[normal]"
   >
     <section
+      :id="donation.id"
       class="absolute w-full top-[70.1px] right-[0px] left-[0px] bg-whitesmoke-100 h-[580.8px] text-left text-base text-gray-600 font-poppins"
     >
       <img
         class="absolute top-[calc(50%_-_270.4px)] left-[393.5px] w-[125px] h-[125px] overflow-hidden object-cover"
         loading="lazy"
-        alt=""
-        src="/ffq2mmimat-1702965892png@2x.png"
+        :alt="donation.title"
+        :src="getImageUrl(donation.image)"
       />
       <div
         class="absolute h-[calc(100%_-_455.8px)] w-[calc(100%_-_912px)] top-[20px] right-[378.5px] bottom-[435.8px] left-[533.5px]"
@@ -20,12 +21,11 @@
             class="absolute top-[3.3px] left-[0px] leading-[16px] flex items-center w-[458.7px] h-8"
           >
             <span class="w-full">
-              <p class="m-0">Lawan Jantung Bocor 'Alby Juga Penyempitan</p>
-              <p class="m-0">Pembuluh Darah Alby</p>
+              <p class="m-0">{{ donation.title }}</p>
             </span>
           </b>
         </div>
-        <img
+        <!-- <img
           class="absolute top-[calc(50%_-_21.3px)] left-[15px] rounded-3xs w-5 h-5 overflow-hidden object-contain"
           loading="lazy"
           alt=""
@@ -45,7 +45,7 @@
             alt=""
             src=""
           />
-        </div>
+        </div> -->
       </div>
       <div
         class="absolute h-[calc(100%_-_253px)] top-[153px] bottom-[100px] left-[calc(50%_-_310px)] w-[620px] text-sm"
@@ -64,7 +64,8 @@
             Pilih nominal yang tersedia
           </div>
           <div
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[78.98%] bottom-[61.87%] left-[4.41%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer"
+            v-bind:class="{ 'active-nominal': selectedNominal === 30000 }"
+            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[78.98%] bottom-[61.87%] left-[4.41%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
             @click="setNominal(30000)"
           >
             <div
@@ -74,20 +75,19 @@
             </div>
           </div>
           <div
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[62.03%] bottom-[61.87%] left-[21.36%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer"
+            v-bind:class="{ 'active-nominal': selectedNominal === 50000 }"
+            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[62.03%] bottom-[61.87%] left-[21.36%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
             @click="setNominal(50000)"
           >
             <div
-              class="absolute top-[4.8px] left-[calc(50%_-_31.7px)] leading-[21px] font-light flex items-center justify-center w-16 h-[21px] whitespace-nowrap"
+              class="absolute top-[4.8px] left-[calc(50%_-_31.5px)] leading-[21px] font-light flex items-center justify-center w-[63.3px] h-[21px] whitespace-nowrap"
             >
               Rp50.000
             </div>
-            <div
-              class="absolute h-full w-[calc(100%_-_2px)] top-[-0.1px] right-[1.5px] bottom-[0.1px] left-[0.5px] rounded-31xl bg-gray-900 box-border border-[1px] border-solid border-gray-200"
-            />
           </div>
           <div
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[45.08%] bottom-[61.87%] left-[38.31%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer"
+            v-bind:class="{ 'active-nominal': selectedNominal === 75000 }"
+            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[45.08%] bottom-[61.87%] left-[38.31%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
             @click="setNominal(75000)"
           >
             <div
@@ -97,7 +97,8 @@
             </div>
           </div>
           <div
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[28.14%] bottom-[61.87%] left-[55.25%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer"
+            v-bind:class="{ 'active-nominal': selectedNominal === 100000 }"
+            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[28.14%] bottom-[61.87%] left-[55.25%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
             @click="setNominal(100000)"
           >
             <div
@@ -114,7 +115,9 @@
           <div
             class="absolute top-[170px] left-[26px] w-[calc(100%-52px)] flex items-center"
           >
-            <span class="text-darkgray-100 text-center leading-[38px]">Rp |</span>
+            <span class="text-darkgray-100 text-center leading-[38px]"
+              >Rp |</span
+            >
             <input
               type="number"
               v-model="nominalLainnya"
@@ -137,11 +140,11 @@
           <div
             class="absolute top-[228.6px] left-[26px] text-xs-2 leading-[16.8px] text-slategray-100 flex items-center w-[148.4px] h-[16.8px]"
           >
-            Minimum donasi Rp 1000
+            Minimum donasi Rp 10.000
           </div>
           <button
             class="cursor-pointer p-0 bg-lightseagreen-200 absolute w-[calc(100%_-_52px)] top-[263px] right-[26px] left-[26px] rounded box-border h-[38.8px] opacity-[0.65] border-[1px] border-solid border-lightseagreen-200 hover:bg-lightseagreen-100 hover:box-border hover:border-[1px] hover:border-solid hover:border-lightseagreen-100"
-            @click="onButtonClick"
+            @click="onButtonClick(donation.id)"
           >
             <div
               class="absolute top-[calc(50%_-_11.1px)] left-[calc(50%_-_43.2px)] text-mini-4 leading-[21.6px] font-medium font-poppins text-white text-center flex items-center justify-center w-[87px] h-[22px]"
@@ -153,39 +156,96 @@
       </div>
     </section>
   </div>
-  <GroupComponent11 />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import GroupComponent11 from "./group-component1.vue";
+import { defineComponent, onMounted, ref } from "vue";
 import BackgroundShadow2 from "./background-shadow.vue";
+import axios from "axios";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "PilihNominalDonasi",
-  components: { GroupComponent11, BackgroundShadow2 },
-  data() {
-    return {
-      nominalLainnya: "",
-    };
-  },
-  methods: {
-    onButtonClick() {
-      this.$router.push("/infodonatur");
-    },
-    setNominal(nominal: number) {
-      this.nominalLainnya = nominal;
-    },
-    incrementNominal() {
-      this.nominalLainnya = Number(this.nominalLainnya) + 10000;
-    },
-    decrementNominal() {
-      if (Number(this.nominalLainnya) - 10000 >= 1000) {
-        this.nominalLainnya = Number(this.nominalLainnya) - 10000;
-      } else {
-        this.nominalLainnya = 1000;
+  components: { BackgroundShadow2 },
+  setup() {
+    const donation = ref({});
+    const nominalLainnya = ref<number | string>("");
+    const selectedNominal = ref<number | null>(null);
+    const route = useRoute();
+    const donationId = route.params.id;
+
+    const fetchDonationDetail = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found in local storage");
+        }
+        console.log(donationId); // Log the donationId to debug
+        const response = await axios.get(
+          `http://localhost:3001/v1/crowdfounding/${donationId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        donation.value = response.data.data;
+      } catch (error) {
+        console.error("Error fetching donation detail:", error);
       }
-    },
+    };
+    onMounted(() => {
+      fetchDonationDetail();
+    });
+
+    const setNominal = (nominal: number) => {
+      selectedNominal.value = nominal;
+      nominalLainnya.value = nominal;
+    };
+
+    const incrementNominal = () => {
+      nominalLainnya.value = Number(nominalLainnya.value) + 10000;
+    };
+
+    const decrementNominal = () => {
+      if (Number(nominalLainnya.value) - 10000 >= 10000) {
+        nominalLainnya.value = Number(nominalLainnya.value) - 10000;
+      } else {
+        nominalLainnya.value = 10000;
+      }
+    };
+
+    const onButtonClick = (donationId: string) => {
+      window.location.href = `/infodonatur/${donationId}?nominal=${nominalLainnya.value}`;
+    };
+    const getImageUrl = (imageName: string) => {
+      return `${imageName}`;
+    };
+    return {
+      donation,
+      getImageUrl,
+      nominalLainnya,
+      selectedNominal,
+      setNominal,
+      incrementNominal,
+      decrementNominal,
+      onButtonClick,
+    };
   },
 });
 </script>
+
+<style scoped>
+.nominal-item {
+  transition: background-color 0.3s ease;
+}
+
+.nominal-item:hover {
+  background-color: #f0f0f0; /* Ganti dengan warna latar hover yang diinginkan */
+  cursor: pointer;
+}
+
+.active-nominal {
+  border-color: #333; /* Warna border gelap yang diinginkan */
+}
+</style>
