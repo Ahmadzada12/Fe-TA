@@ -1,43 +1,85 @@
 <script setup lang="ts">
-import Action from "./_components/actions.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { pageSelection } from "@/constants/opt";
+import { useHttp, useHttpMutation } from "@/composables/http/http";
 
 type Data = {
-  id: string;
-  title: string;
+  id: string
+  title: string
+  statusDonasi: string
+  donationTarget: string
+  donationCollected: string
+  donationStartDate: string
+  donationFinishedDate: string
+  deletedAt: any
+  createdAt: string
+  updatedAt: string
 };
 
 const router = useRouter();
 const showModalDelete = ref<boolean>(false);
+
+const handleModalDelete = (id: string) => {
+  idDelete.value = id;
+  showModalDelete.value = true;
+};
 
 const params = ref({
   page: 1,
   limit: 10,
 });
 
-const data: Data[] = [
+type Response = {
+  data: {
+    data: Data[];
+    total: number;
+  };
+};
+
+const idDelete = ref<string>();
+
+const { data: donation, refetch } = useHttp<Response>("crowdfounding/get/", {
+  params,
+});
+
+
+const { mutate } = useHttpMutation(
+  computed(() => `/crowdfounding/delete/${idDelete.value}`),
   {
-    id: "1",
-    title: "Judul Donasi 1",
-    description: "Deskripsi Donasi 1",
+    method: "DELETE",
+    queryOptions: {
+      onSuccess() {
+        refetch()
+      }
+    }
   },
-  {
-    id: "2",
-    title: "Judul Donasi 2",
-    description: "Deskripsi Donasi 2",
-  },
-  {
-    id: "3",
-    title: "Judul Donasi 3",
-    description: "Deskripsi Donasi 3",
-  },
-];
+);
+
+const data = computed(() => {
+  return donation.value?.data?.data || [];
+  // console.log(news.value);
+
+});
 
 const onDelete = () => {
   showModalDelete.value = false;
+  mutate({});
 };
+
+const numberFormat = (value: string) => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(value));
+};
+
+const getPercentage = (donationCollected: string, donationTarget: string) => {
+  const collected = parseInt(donationCollected);
+  const target = parseInt(donationTarget);
+
+  const percentage = (collected / target) * 100;
+
+  return parseFloat(percentage.toFixed(2));
+};
+
 </script>
 
 <template>
@@ -51,74 +93,41 @@ const onDelete = () => {
         </n-button>
       </div>
     </div>
-    <div class="flex-col">
-      <div class="flex flex-row">
-        <n-card
-          v-for="item in data"
-          :key="item.id"
-          :title="item.title"
-          class="mr-4"
-        >
-          {{ item.description }}
-          <n-progress
-            type="line"
-            :percentage="60"
-            :indicator-placement="'inside'"
-            processing
-            class="my-4"
-          />
-          <template #footer>
-            <div class="flex justify-between w-full">
-              <div class="items-left ">
-                <n-button class="mr-2" quaternary @click="router.push(`/admin/donation/${item.id}/detail`)">
-                  Show
-                </n-button>
-                <n-button quaternary @click="router.push(`/admin/donation/${item.id}/update`)">
-                  Edit
-                </n-button>
-              </div>
-              <n-button quaternary @click="showModalDelete = true">
-                Delete
+
+    <div class="grid grid-cols-3 lg:grid-cols-1 gap-4">
+      <n-card v-for="item in data" :key="item.id">
+
+        {{ item.title }}
+        <n-progress type="line" :percentage="getPercentage(item.donationCollected, item.donationTarget)"
+          :indicator-placement="'inside'" processing class="my-4" />
+
+        <div class='w-full flex justify-between items-center mb-2'>
+          <span>{{ numberFormat('0') }}</span>
+          <span>{{ numberFormat(item.donationTarget) }}</span>
+        </div>
+
+        <p>Collected: <b>
+            {{ numberFormat(item.donationCollected) }}
+          </b></p>
+
+        <template #footer>
+          <div class="flex justify-between w-full">
+            <div class="items-left ">
+              <n-button class="mr-2" quaternary @click="router.push(`/admin/donation/${item.id}/detail`)">
+                Show
+              </n-button>
+              <n-button quaternary @click="router.push(`/admin/donation/${item.id}/update`)">
+                Edit
               </n-button>
             </div>
-            </template>
-        </n-card>
-      </div>
+            <n-button quaternary @click="handleModalDelete(item.id)">
+              Delete
+            </n-button>
+          </div>
+        </template>
+      </n-card>
     </div>
-    <div class="flex-col">
-      <div class="flex flex-row">
-        <n-card
-          v-for="item in data"
-          :key="item.id"
-          :title="item.title"
-          class="mr-4"
-        >
-          {{ item.description }}
-          <n-progress
-            type="line"
-            :percentage="60"
-            :indicator-placement="'inside'"
-            processing
-            class="my-4"
-          />
-          <template #footer>
-            <div class="flex justify-between w-full">
-              <div class="items-left ">
-                <n-button class="mr-2" quaternary @click="router.push(`/admin/donation/${item.id}/detail`)">
-                  Show
-                </n-button>
-                <n-button quaternary @click="router.push(`/admin/donation/${item.id}/update`)">
-                  Edit
-                </n-button>
-              </div>
-              <n-button quaternary @click="showModalDelete = true">
-                Delete
-              </n-button>
-            </div>
-            </template>
-        </n-card>
-      </div>
-    </div>
+
     <div class="flex justify-between">
       <div class="flex gap-5 items-center justify-center">
         Show
@@ -129,12 +138,7 @@ const onDelete = () => {
       <n-pagination v-model:page="params.page" />
     </div>
   </div>
-  <n-modal
-    v-model:show="showModalDelete"
-    preset="card"
-    class="max-w-lg"
-    title="Hapus"
-  >
+  <n-modal v-model:show="showModalDelete" preset="card" class="max-w-lg" title="Hapus">
     <p>Apakah anda yakin ingin menghapus data ini?</p>
     <template #footer>
       <div>

@@ -8,7 +8,7 @@ import { useHttpMutation } from "@/composables/http/http";
 import { useMessage, type FormInst, type FormRules } from "naive-ui";
 
 const router = useRouter();
-const message = useMessage();
+const message = useMessage(); 
 const formData = ref<Form>({});
 const form = ref<FormInst>();
 
@@ -24,7 +24,7 @@ type Response = {
 };
 
 const { mutate, isPending } = useHttpMutation<Form, Response>(
-  "admin/auth/login",
+  "auth/sign-in",
   {
     method: "POST",
     queryOptions: {
@@ -34,7 +34,7 @@ const { mutate, isPending } = useHttpMutation<Form, Response>(
       onSuccess(data) {
         localStorage.setItem("token", data.data.token);
         message.success("Login success");
-        router.push("/");
+        router.push("/admin/dashboard");
       },
     },
   },

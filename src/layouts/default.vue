@@ -55,28 +55,15 @@ const options = [
   <n-space vertical>
     <n-layout>
       <n-layout has-sider>
-        <n-layout-sider
-          bordered
-          show-trigger
-          collapse-mode="width"
-          :collapsed-width="64"
-          :width="240"
-          :native-scrollbar="false"
-          style="min-height: 100vh"
-        >
+        <n-layout-sider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
+          :native-scrollbar="false" style="min-height: 100vh">
           <div class="h-16 flex items-center">
-            <div
-              class="mx-auto max-w-10 flex items-center gap-3 font-bold text-zinc-100"
-            >
+            <div class="mx-auto max-w-10 flex items-center gap-3 font-bold text-zinc-100">
               CFF
             </div>
           </div>
-          <n-menu
-            :collapsed-width="64"
-            :collapsed-icon-size="22"
-            :options="menuOptions"
-            @update:value="(v) => $router.push(v)"
-          />
+          <n-menu :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
+            @update:value="(v) => $router.push(v)" />
         </n-layout-sider>
         <n-layout style="min-height: 100vh" class="relative">
           <div class="sticky w-full inset-x-0 h-16 z-40 border-b">

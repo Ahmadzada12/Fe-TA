@@ -1,61 +1,115 @@
+<script setup lang="ts">
+import { useHttp, useHttpMutation } from "@/composables/http/http";
+import { useMessage } from "naive-ui";
+import { ref, watchEffect, computed } from 'vue'; // Import reactive utilities
+
+type Response = {
+  data: {
+    data: Data[];
+    total: number;
+  };
+};
+
+type Data = {
+  id: string
+  title: string
+  statusDonasi: 'published' | 'unpublished'
+  donationTarget: string
+  donationCollected: string
+  donationStartDate: string
+  donationFinishedDate: string
+  image: string
+}
+
+const route = useRoute();
+const router = useRouter()
+const message = useMessage()
+
+const start = ref(new Date().getTime());
+const end = ref(new Date().getTime());
+
+// Use ref to make formData reactive
+const formData = ref<Data>({
+  id: '',
+  title: '',
+  image: '',
+  statusDonasi: 'published',
+  donationTarget: '',
+  donationCollected: '',
+  donationStartDate: '',
+  donationFinishedDate: ''
+});
+
+// Fetch news data
+const { data } = useHttp<{
+  data: Data;
+}>(computed(() => `crowdfounding/get/${route.params.id}`));
+
+watchEffect(() => {
+  // Update formData reactively when data changes
+  if (data.value?.data) {
+    formData.value = { ...data.value.data };
+    start.value = new Date(data.value.data.donationStartDate as string).getTime();
+    end.value = new Date(data.value.data.donationFinishedDate as string).getTime();
+  }
+});
+
+const numberFormat = (value: string) => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(value));
+};
+
+const getPercentage = (donationCollected: string, donationTarget: string) => {
+  const collected = parseInt(donationCollected);
+  const target = parseInt(donationTarget);
+
+  const percentage = (collected / target) * 100;
+
+  return parseFloat(percentage.toFixed(2));
+};
+
+const months = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+};
+
+const onClick = () => {
+  router.push(`/admin/donation/${route.params.id}/detail/tarikdonasi`)
+}
+</script>
+
+
 <template>
   <div class="space-y-5">
     <div class="space-y-5">
-      <n-h2> Donasi 1 </n-h2>
+      <n-h2> {{ formData.title }}</n-h2>
       <div class="space-y-4">
         <div class="flex flex-row items-center justify-end">
-          <div class="mr-5">Rp.6.000.000/Rp.10.000.000</div>
-          <n-button>Tarik Donation</n-button>
+          <div class="mr-5"> {{ numberFormat(formData.donationCollected) }} / {{
+            numberFormat(formData.donationTarget) }}</div>
+          <n-button quaternary @click="onClick">Tarik Donation</n-button>
         </div>
-        <n-progress
-          type="line"
-          :percentage="60"
-          :indicator-placement="'inside'"
-          processing
-        />
+        <n-progress type="line" :percentage="getPercentage(formData.donationCollected, formData.donationTarget)"
+          :indicator-placement="'inside'" processing />
       </div>
       <div class="w-1/2">
-        <img
-          class="w-full block"
-          src="https://news.itsfoss.com/content/images/size/w1000/2024/06/GitButler_2.png"
-        />
+        <n-image class="w-full block" :src="formData.image" alt="donation" />
       </div>
-      <div v-pre>
-        Lorem ipsum dolor sit amet consectetur. Sem maecenas vel elit urna sed
-        odio non. A arcu pharetra nullam vitae accumsan imperdiet. Euismod sed
-        nunc imperdiet pretium enim. Id nisi at enim turpis. Eu neque tellus
-        fermentum massa nisl vivamus blandit feugiat. Nec et faucibus
-        sollicitudin eget nunc ornare felis. Cursus facilisis sit in magna
-        blandit aliquet. Risus vitae commodo nulla neque odio. Amet elit
-        ullamcorper ut ornare integer. Mi quis morbi elit pretium consectetur
-        commodo phasellus proin. Tristique facilisi sed felis leo viverra mollis
-        luctus consectetur mattis. Ut adipiscing quis non amet tellus. Rutrum
-        leo in consequat donec lectus fermentum velit. Eget neque molestie at
-        tellus. Euismod ut et in dolor etiam imperdiet diam. Sit tincidunt nulla
-        ut sit nibh enim condimentum. Neque nam sed fermentum vitae. Sed et urna
-        sodales ut lacus. Lobortis a ac venenatis platea risus mollis. In vitae
-        eu non venenatis. Eros blandit amet hendrerit lorem volutpat eget turpis
-        varius. Volutpat egestas proin rhoncus tempor maecenas ultrices nunc at
-        sed. Est integer sed id justo. Suspendisse eget feugiat diam ac sit
-        viverra aliquam cras vel. Mi diam aenean lorem arcu. Tellus.
+      <div class="flex flex-row mt-4">
+        <div class="flex items-center gap-3 p-4 rounded-lg shadow mr-5">
+          <span class="font-bold text-gray-700">Mulai:</span>
+          <span class="text-gray-600">{{ formatDate(formData.donationStartDate) }}</span>
+        </div>
+        <div class="flex items-center gap-3 p-4 rounded-lg shadow">
+          <span class="font-bold text-gray-700">Selesai:</span>
+          <span class="text-gray-600">{{ formatDate(formData.donationFinishedDate) }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  setup() {
-    return {
-      value: 50,
-    };
-  },
-  data() {
-    return {
-      value: 50,
-    };
-  },
-});
-</script>

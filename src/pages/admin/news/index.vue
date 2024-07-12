@@ -7,6 +7,13 @@ import { useHttp, useHttpMutation } from "@/composables/http/http";
 type Data = {
   id: string;
   title: string;
+  statusBerita: string;
+  crowdfounding: {
+    title: string;
+  }
+  category: {
+    name: string;
+  }
 };
 
 const router = useRouter();
@@ -25,29 +32,54 @@ type Response = {
   };
 };
 
-const { data: news, isLoading } = useHttp<Response>("admin/news", {
+const { data: news, isLoading, refetch } = useHttp<Response>("news/get", {
   params,
 });
 
 const { mutate } = useHttpMutation(
-  computed(() => `admin/news/${selectedId.value}`),
+  computed(() => `/news/delete/${selectedId.value}`),
   {
     method: "DELETE",
+    queryOptions: {
+      onSuccess() {
+        refetch()
+      }
+    }
   },
 );
 
 const data = computed(() => {
   return news.value?.data?.data || [];
+  // console.log(news.value);
+
 });
 
 const columns: DataTableColumns<Data> = [
-  {
-    key: "id",
-    title: "ID",
-  },
+  // {
+  //   key: "id",
+  //   title: "ID",
+  // },
   {
     key: "title",
     title: "Judul Berita",
+  },
+  {
+    key: "category.name",
+    title: " Kateogri Berita",
+    render(row) {
+      return row.category.name
+    }
+  },
+  {
+    key: "crowdfounding.title",
+    title: " Donasi",
+    render(row) {
+      return row.crowdfounding.title
+    }
+  },
+  {
+    key: "statusBerita",
+    title: "Status Berita",
   },
   {
     key: "action",
@@ -98,12 +130,7 @@ const onDelete = () => {
       <n-pagination v-model:page="params.page" />
     </div>
   </div>
-  <n-modal
-    v-model:show="showModalDelete"
-    preset="card"
-    class="max-w-lg"
-    title="Hapus"
-  >
+  <n-modal v-model:show="showModalDelete" preset="card" class="max-w-lg" title="Hapus">
     <p>Apakah anda yakin ingin menghapus data ini?</p>
     <template #footer>
       <div>

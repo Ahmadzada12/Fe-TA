@@ -2,6 +2,7 @@
 import { DataTableColumns } from "naive-ui";
 import Action from "./_components/actions.vue";
 import { pageSelection } from "@/constants/opt";
+import { useHttp, useHttpMutation } from "@/composables/http/http";
 
 type Data = {
   id: string;
@@ -9,6 +10,7 @@ type Data = {
 };
 
 const router = useRouter();
+const selectedId = ref<string>();
 const showModalDelete = ref<boolean>(false);
 
 const params = ref({
@@ -16,20 +18,37 @@ const params = ref({
   limit: 10,
 });
 
-const data: Data[] = [
+type Response = {
+  data: {
+    data: Data[];
+    total: number;
+  };
+};
+
+const { data: category, refetch } = useHttp<Response>("category/get", {
+  params,
+});
+
+const { mutate } = useHttpMutation(
+  computed(() => `/category/delete/${selectedId.value}`),
   {
-    id: "1",
-    title: "Judul Kategori 1",
+    method: "DELETE",
+    queryOptions: {
+      onSuccess() {
+        refetch()
+      }
+    }
   },
-];
+);
+
+const data = computed(() => {
+  return category.value?.data?.data || [];
+
+});
 
 const columns: DataTableColumns<Data> = [
   {
-    key: "id",
-    title: "ID",
-  },
-  {
-    key: "title",
+    key: "name",
     title: "Judul Kategori",
   },
   {
@@ -39,6 +58,7 @@ const columns: DataTableColumns<Data> = [
     render(data) {
       return h(Action, {
         onDelete: () => {
+          selectedId.value = data.id;
           showModalDelete.value = true;
         },
         onEdit: () => {
@@ -54,6 +74,7 @@ const columns: DataTableColumns<Data> = [
 
 const onDelete = () => {
   showModalDelete.value = false;
+  mutate({});
 };
 </script>
 
@@ -79,12 +100,7 @@ const onDelete = () => {
       <n-pagination v-model:page="params.page" />
     </div>
   </div>
-  <n-modal
-    v-model:show="showModalDelete"
-    preset="card"
-    class="max-w-lg"
-    title="Hapus"
-  >
+  <n-modal v-model:show="showModalDelete" preset="card" class="max-w-lg" title="Hapus">
     <p>Apakah anda yakin ingin menghapus data ini?</p>
     <template #footer>
       <div>

@@ -1,42 +1,59 @@
+<script setup lang="ts">
+import { useHttpMutation } from '@/composables/http/http';
+import { useMessage } from 'naive-ui';
+
+type Data = Partial<{
+  title: string;
+  content: string;
+}>;
+
+const router = useRouter()
+const message = useMessage()
+
+const formData = ref<Data>({
+});
+
+const { mutate } = useHttpMutation("category/create", {
+  method: "POST",
+  httpOptions: {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  },
+  queryOptions: {
+    onSuccess() {
+      message.success('Berhasil Menambahkan Data Kategori')
+      router.replace('/admin/category')
+    }
+  }
+});
+const onSubmit = () => {
+  const data = new FormData();
+  if (formData.value.title) data.append('title', formData.value.title);
+  if (formData.value.content) data.append('content', formData.value.content);
+  mutate(formData.value);
+};
+
+
+</script>
+
 <template>
   <div class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="text-3xl font-bold">Kategori</div>
     </div>
     <div>
-      <n-form>
-        <n-form-item label="Judul Kategori">
-          <n-input />
+      <n-form ref="form" @submit.prevent="onSubmit">
+        <n-form-item label="Judul Kategori" path="title">
+          <n-input v-model:value="formData.title" placeholder="judul kateogori" />
         </n-form-item>
-        <n-form-item label="Content">
-          <n-input type="textarea" />
-        </n-form-item>
-        <n-form-item>
-          <n-upload
-            multiple
-            directory-dnd
-            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-            :max="5"
-          >
-            <n-upload-dragger>
-              <div style="margin-bottom: 12px">
-                <n-icon size="48" :depth="3">
-                  <i-mdi-image />
-                </n-icon>
-              </div>
-              <n-text style="font-size: 16px">
-                Click or drag a file to this area to upload
-              </n-text>
-              <n-p depth="3" style="margin: 8px 0 0 0">
-                Strictly prohibit from uploading sensitive information. For
-                example, your bank card PIN or your credit card expiry date.
-              </n-p>
-            </n-upload-dragger>
-          </n-upload>
+        <n-form-item label="Content" path="content">
+          <n-input v-model:value="formData.content" placeholder="Deskripsi" type="textarea" />
         </n-form-item>
         <div class="flex justify-end gap-5">
           <n-button>Cancel</n-button>
-          <n-button type="primary" attr-type="submit">Submit</n-button>
+          <n-button type="primary" attr-type="submit">Submit
+          </n-button>
         </div>
       </n-form>
     </div>
