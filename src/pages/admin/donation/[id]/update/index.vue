@@ -13,7 +13,7 @@ type Response = {
 type Data = Partial<{
   title: string
   statusDonasi: 'published' | 'unpublished'
-  image: string
+  image: File | null
   donationTarget: string
   donationCollected: string
   donationStartDate: string
@@ -29,9 +29,10 @@ const end = ref(new Date().getTime());
 
 // Use ref to make formData reactive
 const formData = ref<Data>({});
+const initialImg = ref('');
 
 // Fetch news data
-const { data, isLoading } = useHttp<{
+const { data } = useHttp<{
   data: Data;
 }>(computed(() => `crowdfounding/get/${route.params.id}`));
 
@@ -41,6 +42,11 @@ watchEffect(() => {
     formData.value = { ...data.value.data };
     start.value = new Date(data.value.data.donationStartDate as string).getTime();
     end.value = new Date(data.value.data.donationFinishedDate as string).getTime();
+
+
+    if (typeof data.value.data.image === 'string') {
+      initialImg.value = data.value.data.image;
+    }
   }
 });
 
@@ -57,7 +63,25 @@ const { mutate } = useHttpMutation(`crowdfounding/update/${route.params.id}`, {
 
 // Submit form function
 const onSubmit = () => {
-  mutate(formData.value);
+  const startDate = new Date(start.value);
+  const endDate = new Date(end.value);
+
+
+  formData.value.donationStartDate = startDate.toISOString();
+  formData.value.donationFinishedDate = endDate.toISOString();
+
+  if (formData.value.donationTarget) {
+    formData.value.donationTarget = parseFloat(formData.value.donationTarget).toString();
+  }
+
+  const fd = new FormData();
+  fd.append('title', formData.value.title || '');
+  fd.append('statusDonasi', formData.value.statusDonasi || '');
+  fd.append('image', formData.value.image || '');
+  fd.append('donationTarget', formData.value.donationTarget || '');
+  fd.append('donationStartDate', new Date(start.value).toISOString());
+  fd.append('donationFinishedDate', new Date(end.value).toISOString());
+  mutate(fd);
 };
 
 const statusOptions = ref([
@@ -73,6 +97,10 @@ const statusOptions = ref([
 
 const handleBack = () => {
   router.push('/admin/donation')
+}
+
+const handleImageChange = (uploaded: any) => {
+  formData.value.image = uploaded[0].file;;
 }
 </script>
 
@@ -98,12 +126,15 @@ const handleBack = () => {
           </n-gi>
           <n-gi>
             <n-form-item label="Donasi Terkumpul">
-              <n-input v-model:value='formData.donationCollected' />
+              <n-input v-model:value='formData.donationCollected' disabled />
             </n-form-item>
           </n-gi>
         </n-grid>
-        <n-form-item>
-          <n-upload multiple directory-dnd action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f" :max="5">
+        <n-image :src="initialImg" alt="image"
+          style="width: 250px; height: 250px; object-fit: cover; border-radius: 8px" />
+        <n-form-item path='image'>
+          <n-upload multiple directory-dnd accept="image/jpg, image/jpeg, image/png"
+            :on-update:fileList="handleImageChange" :max="1" list-type="image">
             <n-upload-dragger>
               <div style="margin-bottom: 12px">
                 <n-icon size="48" :depth="3">

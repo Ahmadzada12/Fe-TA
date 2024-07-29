@@ -13,6 +13,11 @@ const message = useMessage()
 const formData = ref<Data>({
 });
 
+const rules = {
+  title: [{ required: true, message: 'Judul Kategori harus diisi', trigger: 'blur' }],
+  content: [{ required: true, message: 'Content harus diisi', trigger: 'blur' }],
+}
+
 const { mutate } = useHttpMutation("category/create", {
   method: "POST",
   httpOptions: {
@@ -24,8 +29,12 @@ const { mutate } = useHttpMutation("category/create", {
     onSuccess() {
       message.success('Berhasil Menambahkan Data Kategori')
       router.replace('/admin/category')
+    },
+    onError() {
+      message.error('Gagal Menambahkan Data Kategori')
     }
   }
+
 });
 const onSubmit = () => {
   const data = new FormData();
@@ -43,7 +52,7 @@ const onSubmit = () => {
       <div class="text-3xl font-bold">Kategori</div>
     </div>
     <div>
-      <n-form ref="form" @submit.prevent="onSubmit">
+      <n-form ref="form" :rules="rules" @submit.prevent="onSubmit">
         <n-form-item label="Judul Kategori" path="title">
           <n-input v-model:value="formData.title" placeholder="judul kateogori" />
         </n-form-item>

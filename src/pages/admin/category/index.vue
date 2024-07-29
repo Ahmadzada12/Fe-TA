@@ -89,6 +89,9 @@ const onDelete = () => {
         </n-button>
       </div>
     </div>
+    <div class="w-64">
+      <n-input v-model:value="params.search" placeholder="Search" />
+    </div>
     <n-data-table :columns="columns" :data="data" />
     <div class="flex justify-between">
       <div class="flex gap-5 items-center justify-center">

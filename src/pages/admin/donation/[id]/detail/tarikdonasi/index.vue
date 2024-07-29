@@ -31,11 +31,16 @@ const { mutate } = useHttpMutation(computed(() => `crowdfounding/withdraw/${rout
   method: 'POST',
   queryOptions: {
     onSuccess() {
-      message.success('Berhasil menarik donasi!');
+      message.success('Berhasil menarik donasi karena jumlah donasi kurang dari!');
       router.push('/admin/donation');
     },
-    onError() {
-      message.error('Gagal menarik donasi!');
+    onError(error) {
+      const amount = formData.value.amount;
+      if (error.response && error.response.data && error.response.data.message) {
+        message.error(`Gagal menarik donasi sejumalah ${amount}`);
+      } else {
+        message.error('Gagal menarik donasi karena donasi kurang dari Donasi Terkumpul!');
+      }
     }
   }
 });

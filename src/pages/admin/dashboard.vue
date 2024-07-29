@@ -34,18 +34,18 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="grid grid-col  gap-5">
+  <div class="grid grid-col gap-5">
     <n-card>
       <n-h2 class="text-center">Selamat Datang Pada halaman Admin</n-h2>
     </n-card>
     <div class="grid grid-cols-3 gap-5">
-      <n-card class="">
+      <n-card class="shadow-md">
         <n-h2>Total Donasi : {{ formData.TotalCrowdfunding }}</n-h2>
       </n-card>
-      <n-card>
+      <n-card class="shadow-md">
         <n-h2>Total Kategori : {{ formData.TotalCategories }}</n-h2>
       </n-card>
-      <n-card>
+      <n-card class="shadow-md">
         <n-h2>Total Berita : {{ formData.TotalNews }}</n-h2>
       </n-card>
     </div>

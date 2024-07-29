@@ -25,7 +25,7 @@ type Data = {
 
 const router = useRouter();
 const selectedId = ref<string>();
-const showModalDelete = ref<boolean>(false);
+const showModal = ref<boolean>(false);
 
 const params = ref({
   page: 1,
@@ -43,17 +43,7 @@ const { data: category, refetch } = useHttp<Response>("crowdfounding/get", {
   params,
 });
 
-const { mutate } = useHttpMutation(
-  computed(() => `/category/delete/${selectedId.value}`),
-  {
-    method: "DELETE",
-    queryOptions: {
-      onSuccess() {
-        refetch();
-      }
-    }
-  }
-);
+
 
 const data = computed(() => {
   return category.value?.data?.data || [];
@@ -66,39 +56,6 @@ const numberFormatter = new Intl.NumberFormat("id-ID", {
 });
 
 const columns: DataTableColumns<Data> = [
-  {
-    type: 'expand',
-    expandable: (row) => row.Donation.length > 0,
-    renderExpand(row) {
-      // render table
-      const detailDonasi = row.Donation.map((donation) => {
-        return h('tr', { class: 'w-full case text-sm leading-normal' }, [
-          h('td', { class: 'border px-4 py-2' }, numberFormatter.format(Number(donation.amount))),
-          h('td', { class: 'border px-4 py-2' }, donation?.user?.username),
-          h('td', { class: 'border px-4 py-2' }, donation.status),
-        ]);
-      });
-
-      return h('div', [
-        h(
-          'table',
-          { class: 'min-w-full bg-white' },
-          [
-            h('thead', [
-              h('tr', { class: 'w-full bg-gray-200 text-gray-600 case text-sm leading-normal' }, [
-                h('th', { class: 'border px-4 py-2' }, 'Donasi'),
-                h('th', { class: 'border px-4 py-2' }, 'User'),
-                h('th', { class: 'border px-4 py-2' }, 'Status'),
-              ]),
-            ]),
-            h('tbody', detailDonasi
-            ),
-          ]),
-
-      ]
-      )
-    }
-  },
   {
     key: "title",
     title: "Judul Donasi",
@@ -132,34 +89,24 @@ const columns: DataTableColumns<Data> = [
     },
   },
   {
-    key: "action",
+    key: "actions",
     width: 200,
-    title: "Action",
     render(data) {
       return h(Action, {
-        onDelete: () => {
-          selectedId.value = data.id;
-          showModalDelete.value = true;
-        },
-        onEdit: () => {
-          router.push(`/admin/category/${data.id}/update`);
-        },
+        data,
         onDetail: () => {
-          router.push(`/admin/category/${data.id}/detail`);
+          router.push(`/admin/laporan/${data.id}`);
         },
-      });
-    },
-  },
+      })
+    }
+
+  }
 ];
 
-const onDelete = () => {
-  showModalDelete.value = false;
-  mutate({});
-};
 
-const triggerAreas = computed(() => {
-  return ["title"];
-});   
+
+// const triggerAreas = computed(() => {
+//   return ["title"];// });   
 </script>
 
 <template>
@@ -167,8 +114,8 @@ const triggerAreas = computed(() => {
     <div class="flex justify-between items-center">
       <div class="text-3xl font-bold">Laporan Donasi</div>
     </div>
-    <n-data-table :columns="columns" :data="data" :expandable="true">
-      <template #expand="{ row }">
+    <n-data-table :columns="columns" :data="data">
+      <!-- <template #expand="{ row }">
         <n-collapse :triggerareas="triggerAreas">
           <n-collapse-item title="Detail">
             <p><strong>ID:</strong> {{ row.id }}</p>
@@ -178,7 +125,7 @@ const triggerAreas = computed(() => {
             <p><strong>Donasi Terkumpul:</strong> {{ row.donationCollected }}</p>
           </n-collapse-item>
         </n-collapse>
-      </template>
+      </template> -->
     </n-data-table>
     <div class="flex justify-between">
       <div class="flex gap-5 items-center justify-center">
@@ -190,13 +137,4 @@ const triggerAreas = computed(() => {
       <n-pagination v-model:page="params.page" />
     </div>
   </div>
-  <n-modal v-model:show="showModalDelete" preset="card" class="max-w-lg" title="Hapus">
-    <p>Apakah anda yakin ingin menghapus data ini?</p>
-    <template #footer>
-      <div>
-        <n-button type="primary" @click="onDelete">Submit</n-button>
-        <n-button class="ml-3" @click="showModalDelete = false">Cancel</n-button>
-      </div>
-    </template>
-  </n-modal>
 </template>

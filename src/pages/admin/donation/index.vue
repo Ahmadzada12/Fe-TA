@@ -28,6 +28,7 @@ const handleModalDelete = (id: string) => {
 const params = ref({
   page: 1,
   limit: 10,
+  search: "",
 });
 
 type Response = {
@@ -86,6 +87,9 @@ const getPercentage = (donationCollected: string, donationTarget: string) => {
   <div class="space-y-4">
     <div class="flex justify-between items-center">
       <div class="text-3xl font-bold">Donasi</div>
+      <div class="w-64">
+        <n-input v-model:value="params.search" placeholder="Search" />
+      </div>
       <div>
         <n-button type="primary" @click="router.push('/admin/donation/create')">
           <i-mdi-plus />
@@ -96,8 +100,12 @@ const getPercentage = (donationCollected: string, donationTarget: string) => {
 
     <div class="grid grid-cols-3 lg:grid-cols-1 gap-4">
       <n-card v-for="item in data" :key="item.id">
-
-        {{ item.title }}
+        <div class='w-full flex justify-between items-center mb-2'>
+          <span>{{ item.title }}</span>
+          <span
+            :class="{ 'text-green-500': item.statusDonasi === 'published', 'text-red-500': item.statusDonasi === 'unpublished' }">{{
+              item.statusDonasi }}</span>
+        </div>
         <n-progress type="line" :percentage="getPercentage(item.donationCollected, item.donationTarget)"
           :indicator-placement="'inside'" processing class="my-4" />
 

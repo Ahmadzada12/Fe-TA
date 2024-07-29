@@ -11,11 +11,12 @@ type Response = {
 };
 
 type Data = Partial<{
+  id: string;
   title: string;
   crowdfoundingId: string;
   categoryId: string;
   content: string;
-  image: string;
+  image: File | null;
   statusBerita: 'published' | 'unpublished';
 }>;
 
@@ -25,6 +26,7 @@ const message = useMessage()
 
 // Use ref to make formData reactive
 const formData = ref<Data>({});
+const intialImg = ref('');
 
 const { data: kategori, isLoading: kategoriLoading } = useHttp<Response>("category/get");
 const { data: Donasi, isLoading: DonasiLoading } = useHttp<Response>("crowdfounding/get");
@@ -38,6 +40,10 @@ watchEffect(() => {
   // Update formData reactively when data changes
   if (data.value?.data) {
     formData.value = { ...data.value.data };
+
+    if (typeof data.value.data.image === 'string') {
+      intialImg.value = data.value.data.image;
+    }
   }
 });
 
@@ -54,6 +60,15 @@ const { mutate } = useHttpMutation(`news/update/${route.params.id}`, {
 
 // Submit form function
 const onSubmit = () => {
+  const fd = new FormData();
+  fd.append('image', formData.value.image || '');
+  fd.append('title', formData.value.title || '');
+  fd.append('categoryId', formData.value.categoryId || '');
+  fd.append('crowdfoundingId', formData.value.crowdfoundingId || '');
+  fd.append('content', formData.value.content || '');
+  fd.append('statusBerita', formData.value.statusBerita || '');
+
+  mutate(fd);
   mutate(formData.value);
 };
 
@@ -82,6 +97,10 @@ const statusOptions = ref([
     value: 'unpublished'
   },
 ]);
+
+const handleUpload = (uploaded: any) => {
+  formData.value.image = uploaded[0].file;
+};
 </script>
 
 <template>
@@ -110,8 +129,11 @@ const statusOptions = ref([
           <n-form-item label="Content" path="content">
             <n-input type="textarea" v-model:value="formData.content" />
           </n-form-item>
-          <n-form-item>
-            <n-upload multiple directory-dnd action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f" :max="5">
+          <n-image :src="intialImg" alt="image"
+            style="width: 250px; height: 250px; object-fit: cover; border-radius: 8px;" />
+          <n-form-item path='image'>
+            <n-upload multiple directory-dnd accept="image/jpg, image/png, image/ jpeg" :max="1"
+              :on-update:fileList="handleUpload" list-type="image">
               <n-upload-dragger>
                 <div style="margin-bottom: 12px">
                   <n-icon size="48" :depth="3">

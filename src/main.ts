@@ -20,6 +20,13 @@ const router = createRouter({
 });
 
 router.beforeEach((toRoute, _, next) => {
+  const token = localStorage.getItem("token");
+
+  if (!token && toRoute.path !== "/admin/auth/login") {
+    next("/admin/auth/login");
+    return;
+  }
+
   const metaTitle = toRoute?.meta?.title as string;
   const metaDesc = toRoute?.meta?.description as string;
 

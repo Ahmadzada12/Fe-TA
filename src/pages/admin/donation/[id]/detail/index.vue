@@ -92,7 +92,7 @@ const onClick = () => {
         <div class="flex flex-row items-center justify-end">
           <div class="mr-5"> {{ numberFormat(formData.donationCollected) }} / {{
             numberFormat(formData.donationTarget) }}</div>
-          <n-button quaternary @click="onClick">Tarik Donation</n-button>
+          <n-button type="primary" quaternary @click="onClick">Tarik Donation</n-button>
         </div>
         <n-progress type="line" :percentage="getPercentage(formData.donationCollected, formData.donationTarget)"
           :indicator-placement="'inside'" processing />

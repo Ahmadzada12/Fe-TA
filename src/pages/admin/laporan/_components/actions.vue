@@ -7,7 +7,7 @@
         </n-icon>
       </template>
     </n-button>
-    <n-button quaternary @click="$emit('edit')">
+    <!-- <n-button quaternary @click="$emit('edit')">
       <template #icon>
         <n-icon>
           <i-mdi-pencil-outline />
@@ -20,6 +20,6 @@
           <i-mdi-trash-can-outline />
         </n-icon>
       </template>
-    </n-button>
+    </n-button> -->
   </div>
 </template>

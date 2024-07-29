@@ -23,6 +23,7 @@ const showModalDelete = ref<boolean>(false);
 const params = ref({
   page: 1,
   limit: 10,
+  search: "",
 });
 
 type Response = {
@@ -118,6 +119,9 @@ const onDelete = () => {
           Add Berita
         </n-button>
       </div>
+    </div>
+    <div class="w-64">
+      <n-input v-model:value="params.search" placeholder="Search" />
     </div>
     <n-data-table :columns="columns" :data="data" :loading="isLoading" />
     <div class="flex justify-between">

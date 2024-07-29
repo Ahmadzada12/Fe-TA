@@ -21,7 +21,19 @@ const start = ref(new Date().getTime());
 const end = ref(new Date().getTime());
 
 // Use ref to make formData reactive
-const formData = ref<Data>({});
+const formData = ref<Data>({
+  donationCollected: '0',
+});
+
+const rules = {
+  title: [{ required: true, message: 'Judul Donasi harus diisi', trigger: 'blur' }],
+  status: [{ required: true, message: 'Status Donasi harus diisi', trigger: 'blur' }],
+  donationTarget: [{ required: true, message: 'Target Donasi harus diisi', trigger: 'blur' }],
+  donationCollected: [{ required: true, message: 'Donasi Terkumpul harus diisi', trigger: 'blur' }],
+  image: [{ required: true, message: 'Gambar harus diisi', trigger: 'blur' }],
+  donationStartDate: [{ required: true, message: 'Tanggal Mulai Donasi harus diisi', trigger: 'blur' }],
+  donationFinishedDate: [{ required: true, message: 'Donasi Selesai harus diisi', trigger: 'blur' }],
+}
 
 // HTTP mutation for updating news
 const { mutate } = useHttpMutation(`crowdfounding/create`, {
@@ -30,6 +42,9 @@ const { mutate } = useHttpMutation(`crowdfounding/create`, {
     onSuccess() {
       message.success('Berhasil membuat data!')
       router.push('/admin/donation')
+    },
+    onError(error) {
+      message.error('Gagal membuat data donasi!')
     }
   }
 });
@@ -46,8 +61,8 @@ const onSubmit = () => {
   fd.append('title', formData.value.title || '');
   fd.append('status', formData.value.status || '');
   fd.append('image', formData.value.image || '');
-  fd.append('donationTarget', formData.value.donationTarget || '');
-  fd.append('donationCollected', formData.value.donationCollected || '');
+  fd.append('donationTarget', String(formData.value.donationTarget || ''));
+  fd.append('donationCollected', String(formData.value.donationCollected || ''));
   fd.append('donationStartDate', formData.value.donationStartDate || '');
   fd.append('donationFinishedDate', formData.value.donationFinishedDate || '');
 
@@ -83,18 +98,18 @@ const handleUpload = (uploaded: any) => {
       <div class="text-3xl font-bold">Donasi</div>
     </div>
     <div>
-      <n-form ref="form" :model="formData" @submit.prevent="onSubmit">
+      <n-form ref="form" :model="formData" :rules="rules" @submit.prevent="onSubmit">
         <n-form-item label="Judul Donasi" path='title'>
-          <n-input v-model:value='formData.title' />
+          <n-input v-model:value='formData.title' placeholder="Judul Donasi" />
         </n-form-item>
 
         <n-form-item label="Status Donasi" path='status'>
-          <n-select v-model:value='formData.status' :options="statusOptions" />
+          <n-select v-model:value='formData.status' :options="statusOptions" placeholder="Status Donasi" />
         </n-form-item>
         <n-grid x-gap="12" :cols="2">
           <n-gi>
             <n-form-item label="Target Donasi" path='donationTarget'>
-              <n-input v-model:value='formData.donationTarget' />
+              <n-input v-model:value='formData.donationTarget' placeholder="Target Donasi" />
             </n-form-item>
           </n-gi>
           <n-gi>
@@ -128,7 +143,7 @@ const handleUpload = (uploaded: any) => {
           <n-form-item class="mr-5" label="Tanggal Mulai Donasi" path='donationStartDate'>
             <n-date-picker v-model:value="start" type="datetime" clearable />
           </n-form-item>
-          <n-form-item label="Donasi Selesai" path='donationFinishedDate'>
+          <n-form-item label="Tanggal Donasi Selesai" path='donationFinishedDate'>
             <n-date-picker v-model:value="end" type="datetime" clearable />
           </n-form-item>
         </div>

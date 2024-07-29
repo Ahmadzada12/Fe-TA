@@ -11,6 +11,8 @@ function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+
 const menuOptions = computed(() => [
   {
     label: "Dashboard",
@@ -46,7 +48,7 @@ const options = [
   },
   {
     label: "Logout",
-    key: "/auth/logout",
+    key: "auth/login",
   },
 ];
 </script>
@@ -57,9 +59,9 @@ const options = [
       <n-layout has-sider>
         <n-layout-sider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
           :native-scrollbar="false" style="min-height: 100vh">
-          <div class="h-16 flex items-center">
-            <div class="mx-auto max-w-10 flex items-center gap-3 font-bold text-zinc-100">
-              CFF
+          <div class=" flex items-center">
+            <div class="justify-center flex items-center py-4 font-bold text-zinc-100">
+              <img src="./component/logo_stack.png" class="w-3/4 h-full" alt="">
             </div>
           </div>
           <n-menu :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
@@ -70,13 +72,12 @@ const options = [
             <div class="flex justify-end items-center h-16 px-5">
               <div>
                 <n-dropdown :options="options" @select="(v) => $router.push(v)">
-                  <n-button text color="#000">MyName</n-button>
+                  <n-button text color="#000">{{ user.fullname }}</n-button>
                 </n-dropdown>
               </div>
             </div>
           </div>
-          <main class="p-5">
-            <router-view />
+          <main class="p-5"> <router-view />
           </main>
         </n-layout>
       </n-layout>

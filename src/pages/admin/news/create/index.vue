@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHttp, useHttpMutation } from "@/composables/http/http";
-import { useMessage } from "naive-ui";
+import { FormRules, useMessage } from "naive-ui";
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -37,10 +37,45 @@ const { mutate } = useHttpMutation("news/create", {
       router.replace('/admin/news');
     }
   },
-  // h
-
-
 });
+
+const rules: FormRules = {
+  title: [
+    {
+      required: true,
+      message: "Please input your title",
+      trigger: ["blur", "input"],
+    },
+  ],
+  categoryId: [
+    {
+      required: true,
+      message: "Please select category",
+      trigger: ["blur", "input"],
+    },
+  ],
+  crowdfoundingId: [
+    {
+      required: true,
+      message: "Please select crowdfounding",
+      trigger: ["blur", "input"],
+    },
+  ],
+  content: [
+    {
+      required: true,
+      message: "Please input your content",
+      trigger: ["blur", "input"],
+    },
+  ],
+  statusBerita: [
+    {
+      required: true,
+      message: "Please select status berita",
+      trigger: ["blur", "input"],
+    },
+  ],
+};
 
 const categoryOptions = computed(() => {
   const data = kategori?.value?.data?.data || [];
@@ -97,9 +132,9 @@ const handleUpload = (uploaded: any) => {
       <div class="text-3xl font-bold">Berita</div>
     </div>
     <div>
-      <n-form ref="form" :model="formData" @submit.prevent="onSubmit">
+      <n-form ref="form" :model="formData" :rules="rules" @submit.prevent="onSubmit">
         <n-form-item label="Judul Berita" path="title">
-          <n-input v-model:value="formData.title" />
+          <n-input v-model:value="formData.title" placeholder="judul Berita" />
         </n-form-item>
         <n-form-item label="Kategori" path="categoryId">
           <n-select v-model:value="formData.categoryId" :options="categoryOptions" placeholder="Pilih kategori"
@@ -110,10 +145,14 @@ const handleUpload = (uploaded: any) => {
             :loading="DonasiLoading" />
         </n-form-item>
         <n-form-item label="Status Berita" path="statusBerita">
-          <n-select v-model:value="formData.statusBerita" placeholder="Pilih status berita" :options="statusOptions" />
+          <n-radio-group v-model:value="formData.statusBerita">
+            <n-radio value="published">Published</n-radio>
+            <n-radio value="unpublished">Unpublished</n-radio>
+          </n-radio-group>
+          <!-- <n-select v-model:value="formData.statusBerita" placeholder="Pilih status berita" :options="statusOptions" /> -->
         </n-form-item>
         <n-form-item label="Content" path="content">
-          <n-input type="textarea" v-model:value="formData.content" />
+          <n-input type="textarea" v-model:value="formData.content" placeholder="Deskripsi berita" />
         </n-form-item>
         <n-form-item>
           <n-upload directory-dnd :max="1" accept="image/png, image/jpeg" :on-update:fileList="handleUpload"
