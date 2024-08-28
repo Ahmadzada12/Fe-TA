@@ -14,7 +14,7 @@ const formData = ref<Data>({
 });
 
 const rules = {
-  title: [{ required: true, message: 'Judul Kategori harus diisi', trigger: 'blur' }],
+  title: [{ required: true, message: 'Judul Kategori harus diisi , Judul Kategori tidak boleh sama', trigger: 'blur' }],
   content: [{ required: true, message: 'Content harus diisi', trigger: 'blur' }],
 }
 

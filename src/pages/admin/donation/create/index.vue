@@ -104,7 +104,10 @@ const handleUpload = (uploaded: any) => {
         </n-form-item>
 
         <n-form-item label="Status Donasi" path='status'>
-          <n-select v-model:value='formData.status' :options="statusOptions" placeholder="Status Donasi" />
+          <n-radio-group v-model:value="formData.status">
+            <n-radio value="published">Published</n-radio>
+            <n-radio value="unpublished">Unpublished</n-radio>
+          </n-radio-group>
         </n-form-item>
         <n-grid x-gap="12" :cols="2">
           <n-gi>
