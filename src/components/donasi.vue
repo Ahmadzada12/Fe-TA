@@ -2,7 +2,20 @@
   <div
     class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-center justify-start gap-[30px] leading-[normal] tracking-[normal] text-left text-sm text-slategray-100 font-poppins"
   >
-    <PageBackground />
+    <MainContent />
+    <!-- Input Search -->
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Cari donasi..."
+      class="w-full max-w-[400px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-lightseagreen-200"
+    />
+    <div
+      v-if="paginatedDonations.length === 0"
+      class="text-center text-gray-500"
+    >
+      Tidak ada donasi yang ditemukan.
+    </div>
     <main
       class="self-stretch shrink-0 flex flex-row items-start justify-center py-0 pr-[21px] pl-5 box-border max-w-full text-left text-sm text-gray-700 font-poppins"
     >
@@ -22,6 +35,7 @@
               loading="lazy"
               :alt="donation.title"
               :src="getImageUrl(donation.image)"
+              @error="(e) => (e.target.src = '/fallback-image.jpg')"
             />
             <div
               class="card-content flex flex-col items-start justify-start p-4"
@@ -33,23 +47,47 @@
                   <p class="m-0">{{ donation.title }}</p>
                 </b>
                 <div
-                  class="w-full rounded bg-slategray-100 flex items-center justify-center py-1 text-center text-2xs-5 text-white"
+                  class="w-full rounded bg-slategray-100 flex items-center justify-center py-1 text-center text-2xs-5 text-white relative overflow-hidden"
                 >
-                  <b class="flex-1 relative leading-[10.5px] font-bold">
-                    {{ donation.category || "Unknown" }}
+                  <div
+                    class="absolute top-0 left-0 h-full bg-green-500"
+                    :style="{
+                      width:
+                        donation.donationTarget > 0
+                          ? (donation.donationCollected /
+                              donation.donationTarget) *
+                              100 +
+                            '%'
+                          : '0%',
+                    }"
+                  ></div>
+                  <b class="relative z-10 flex-1 leading-[10.5px] font-bold">
+                    {{
+                      donation.donationTarget > 0
+                        ? Math.round(
+                            (donation.donationCollected /
+                              donation.donationTarget) *
+                              100
+                          ) + "%"
+                        : "0%"
+                    }}
                   </b>
                 </div>
               </div>
               <div
-                class="self-stretch flex flex-col items-start justify-start text-xs-2 text-gold mt-4"
+                class="relative self-stretch leading-[24px] flex justify-between mt-4 text-xs-2"
               >
-                <div class="relative leading-[24px]">
+                <div>
                   <b>Rp {{ donation.donationCollected }}</b>
                   <span class="text-gray-600">
                     <span class="text-gray-600"> </span>
-                    <span class="text-slategray-100">terkumpul </span>
+                    <span class="text-slategray-100"> terkumpul, </span>
                     <span>dari Rp {{ donation.donationTarget }}</span>
                   </span>
+                </div>
+                <div class="text-sm text-gray-500 text-right">
+                  {{ calculateDuration(donation) }}
+                  hari
                 </div>
               </div>
               <button
@@ -104,17 +142,32 @@ import PageBackground from "./page-background.vue";
 import Item2 from "./item2.vue";
 import Item from "./item.vue";
 import GroupComponent4 from "./group-component4.vue";
+import MainContent from "./main-content.vue";
+
+interface Donation {
+  id: string;
+  title: string;
+  donationCollected: number;
+  donationTarget: number;
+  image: string;
+  donationStartDate: string; // Ganti createdAt menjadi donationStartDate
+  donationFinishedDate: string | null; // Ganti deletedAt menjadi donationFinishedDate
+  statusDonasi?: string;
+}
 
 export default defineComponent({
   name: "Donasi",
   components: {
     PageBackground,
+    MainContent,
     Item2,
     Item,
     GroupComponent4,
   },
+
   setup() {
-    const donations = ref([]);
+    const donations = ref<Donation[]>([]);
+    const searchQuery = ref("");
     const currentPage = ref(1);
     const itemsPerPage = 9;
     const instance = getCurrentInstance(); // Get the current Vue instance
@@ -134,23 +187,65 @@ export default defineComponent({
           }
         );
         donations.value = response.data.data.data;
+
+        // Perbarui statusDonasi untuk setiap donasi
+        donations.value.forEach((donation) => {
+          calculateDuration(donation);
+        });
       } catch (error) {
         console.error("Error fetching donations:", error);
       }
     };
 
-    onMounted(() => {
-      fetchDonations();
-    });
+    // Fungsi untuk menghitung durasi crowdfunding
+    const calculateDuration = (donation: Donation) => {
+      const createdDate = new Date(donation.donationStartDate);
+      const endDate = donation.donationFinishedDate
+        ? new Date(donation.donationFinishedDate) // Jika donationFinishedDate ada, gunakan tanggal tersebut
+        : new Date(); // Jika donationFinishedDate null, gunakan tanggal hari ini
+      const durationInMilliseconds = endDate.getTime() - createdDate.getTime();
+      const durationInDays = Math.ceil(
+        durationInMilliseconds / (1000 * 60 * 60 * 24)
+      ); // Konversi ke hari
 
-    const paginatedDonations = computed(() => {
+      // Jika durasi lebih dari 50 hari, ubah statusDonasi menjadi "unpublished"
+      if (durationInDays > 50) {
+        donation.statusDonasi = "unpublished";
+      } else {
+        donation.statusDonasi = "published";
+      }
+
+      return durationInDays > 50 ? 50 : durationInDays;
+    };
+
+    // Filter data berdasarkan searchQuery
+    const filteredDonations = computed(() => {
+      if (!searchQuery.value) {
+        return donations.value.filter(
+          (donation) => donation.statusDonasi === "published"
+        );
+      }
+      return donations.value.filter(
+        (donation) =>
+          donation.statusDonasi === "published" &&
+          donation.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    });
+    // Pagination untuk data yang sudah difilter
+    const updatePagination = () => {
       const start = (currentPage.value - 1) * itemsPerPage;
       const end = start + itemsPerPage;
-      return donations.value.slice(start, end);
+      return filteredDonations.value.slice(start, end);
+    };
+    const paginatedDonations = computed(updatePagination);
+
+    // Total halaman berdasarkan data yang sudah difilter
+    const totalPages = computed(() => {
+      return Math.ceil(filteredDonations.value.length / itemsPerPage);
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(donations.value.length / itemsPerPage);
+    onMounted(() => {
+      fetchDonations();
     });
 
     const prevPage = () => {
@@ -181,12 +276,14 @@ export default defineComponent({
     return {
       donations,
       currentPage,
+      searchQuery,
       paginatedDonations,
       totalPages,
       prevPage,
       nextPage,
       onPilihNominalTextClick,
       getImageUrl,
+      calculateDuration,
     };
   },
 });

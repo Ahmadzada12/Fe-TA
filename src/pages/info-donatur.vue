@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-start justify-start gap-[36.7px] leading-[normal] tracking-[normal] mq750:gap-[18px]"
+    class="w-full relative bg-gradient-to-b from-[#fff] to-[#fff] overflow-y-auto flex flex-col items-start justify-start gap-[36.7px] leading-normal tracking-normal mq750:gap-[18px]"
   >
     <main
       class="self-stretch flex flex-col items-start justify-start max-w-full"
@@ -14,10 +14,11 @@
           class="flex flex-row items-start justify-start gap-[55px] max-w-full mq1050:flex-wrap mq750:gap-[27px]"
         >
           <img
-            class="h-[100px] w-[100px] relative overflow-hidden shrink-0 object-cover"
+            v-if="donation.image"
+            :src="donation.image"
+            class="h-[150px] w-[150px] relative overflow-hidden shrink-0 object-cover rounded-3xs"
             loading="lazy"
-            alt=""
-            src="/zlncafsutp-1701176203jpg@2x.png"
+            alt="Donation Image"
           />
           <div
             class="flex flex-col items-start justify-start gap-[8px] max-w-full"
@@ -27,25 +28,20 @@
             </b>
             <div class="flex flex-row items-end justify-start text-sm">
               <img
-                class="h-5 w-5 relative rounded-3xs overflow-hidden shrink-0 object-contain [debug_commit:bf4bc93]"
+                class="h-5 w-5 relative rounded-3xs overflow-hidden shrink-0 object-contain"
                 loading="lazy"
-                alt=""
+                alt="Default Avatar"
                 src="/defaultavatarpng@2x.png"
               />
               <div
-                class="relative leading-[21px] font-light shrink-0 [debug_commit:bf4bc93] ml-[-0.2px]"
+                class="relative leading-[21px] font-light shrink-0 ml-[-0.2px]"
               >
-                 MUSAWARAH X KITABISA
+                {{ donation.userName }}
               </div>
               <div
                 class="flex flex-col items-start justify-end pt-0 px-0 pb-[2.5px] ml-[-0.2px]"
               >
-                <img
-                  class="w-[15px] h-[15px] relative overflow-hidden shrink-0 object-cover [debug_commit:bf4bc93]"
-                  loading="lazy"
-                  alt=""
-                  src="/verifywebp@2x.png"
-                />
+                <!-- Additional content if needed -->
               </div>
             </div>
           </div>
@@ -110,8 +106,9 @@
             </div>
             <div
               class="self-stretch flex flex-col items-start justify-start gap-[9px] max-w-full"
-            ></div>
-
+            >
+              <!-- Additional content if needed -->
+            </div>
             <div
               class="self-stretch flex flex-row items-start justify-between gap-[20px] mq450:flex-wrap"
             >
@@ -132,7 +129,7 @@
                 class="h-[66px] flex-1 rounded-sm bg-white box-border overflow-hidden flex flex-row items-start justify-start pt-3.5 px-3 pb-[38px] max-w-full border-[1px] border-solid border-lightgray-100"
               >
                 <input
-                  class="w-[163px] [border:none] [outline:none] font-poppins text-xs bg-[transparent] h-3 relative leading-[12px] text-slategray-100 text-left flex items-center p-0"
+                  class="w-[163px] border-none outline-none font-poppins text-xs bg-transparent h-3 relative leading-[12px] text-slategray-100 text-left flex items-center p-0"
                   placeholder="Pesan atau Doa (Opsional)"
                   type="text"
                   v-model="description"
@@ -155,20 +152,21 @@
     </main>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import BackgroundShadow from "../components/background-shadow.vue";
-import ContactLabels from "../components/contact-labels.vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "InfoDonatur",
-  components: { BackgroundShadow, ContactLabels },
+  components: { BackgroundShadow },
   setup() {
-    const donation = ref({});
+    const donation = ref<any>({});
     const route = useRoute();
     const donationId = route.params.id;
+    const nominal = ref<number>(0); // Tambahkan ref untuk nominal
 
     const fetchDonationDetail = async () => {
       try {
@@ -176,7 +174,6 @@ export default defineComponent({
         if (!token) {
           throw new Error("No token found in local storage");
         }
-        console.log(donationId); // Log the donationId to debug
         const response = await axios.get(
           `http://localhost:3001/v1/crowdfounding/${donationId}`,
           {
@@ -193,28 +190,17 @@ export default defineComponent({
 
     onMounted(() => {
       fetchDonationDetail();
+      const queryNominal = route.query.nominal; // Ambil nominal dari query parameter
+      if (queryNominal) {
+        nominal.value = Number(queryNominal); // Set nominal dari query parameter
+      }
     });
 
     return {
       donation,
-      nominal: 0,
-      description: ref("")
+      nominal,
+      description: ref(""),
     };
-  },
-  data() {
-    return {
-      amount: 0,
-      description: ""
-    };
-  },
-  created() {
-    // Ambil nilai 'nominal' dari parameter kueri rute
-    const nominal = this.$route.query.nominal;
-    if (nominal) {
-      this.nominal = Number(nominal); // Simpan nilai dalam data komponen Anda
-    } else {
-      // Tangani jika 'nominal' tidak tersedia
-    }
   },
   methods: {
     onUbahClick(donationId: string) {
@@ -226,13 +212,16 @@ export default defineComponent({
         if (!token) {
           throw new Error("No token found in local storage");
         }
-
+        // Set default value for description if it's empty
+        if (!this.description.trim()) {
+          this.description = "-";
+        }
         const response = await axios.post(
-          'http://localhost:3001/v1/donate/create-invoice',
+          "http://localhost:3001/v1/donate/create-invoice",
           {
             id: this.donation.id,
             amount: this.nominal,
-            description: this.description
+            description: this.description,
           },
           {
             headers: {
@@ -241,16 +230,19 @@ export default defineComponent({
           }
         );
 
-        console.log(response.data);
-      if (response.data && response.data.invoiceUrl) {
-        window.location.href = response.data.invoiceUrl; // Redirect to the invoice URL
-      } else {
-        console.error('Invoice URL not found in response');
+        if (response.data && response.data.invoiceUrl) {
+          window.location.href = response.data.invoiceUrl; // Redirect to the invoice URL
+        } else {
+          console.error("Invoice URL not found in response");
+        }
+      } catch (error) {
+        console.error("Error creating invoice:", error);
       }
-    } catch (error) {
-        console.error('Error creating invoice:', error);
-      }
-    }
-  }
+    },
+  },
 });
 </script>
+
+<style scoped>
+/* Add any additional styles here */
+</style>

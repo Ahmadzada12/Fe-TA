@@ -28,7 +28,6 @@
           <div
             class="relative text-4xs-6 tracking-[0.2em] uppercase font-medium text-black whitespace-nowrap lg:hidden"
           >
-            uang kalian, kami tilep
           </div>
         </div>
       </div>

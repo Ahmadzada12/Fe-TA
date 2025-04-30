@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+import axios from "axios";
 
 import Home from "./pages/home.vue";
 import Donasi1 from "./pages/donasi1.vue";
@@ -11,15 +12,21 @@ import InfoDonatur from "./pages/info-donatur.vue";
 import Donasi from "./components/donasi.vue";
 import "./global.css";
 import login from "./pages/login.vue";
+import "./assets/tailwind.css";
 import PilihNominalDonasi from "./components/pilih-nominal-donasi.vue";
 import Register from "./pages/register.vue";
 import Profil from "./pages/profil.vue";
-import axios from "axios";
+import detailDonasi from "./pages/detail-donasi.vue";
 
 interface Route {
   path: string;
   name: string;
   component: any;
+  meta?: {
+    requiresAuth?: boolean;
+    title?: string;
+    description?: string;
+  };
 }
 
 const routes: Route[] = [
@@ -39,9 +46,10 @@ const routes: Route[] = [
     component: Register,
   },
   {
-    path: '/donasi1/:id',
-    name: 'Donasi1',
+    path: "/donasi1/:id",
+    name: "Donasi1",
     component: Donasi1,
+    meta: { requiresAuth: true },
   },
   {
     path: "/berita",
@@ -52,31 +60,42 @@ const routes: Route[] = [
     path: "/riwayat-donasi",
     name: "RiwayatDonasi",
     component: RiwayatDonasi,
+    meta: { requiresAuth: true },
   },
   {
     path: "/berita1/:id",
     name: "Berita1",
     component: Berita1,
+    meta: { requiresAuth: true },
   },
   {
     path: "/infodonatur/:id",
     name: "InfoDonatur",
     component: InfoDonatur,
+    meta: { requiresAuth: true },
   },
   {
     path: "/donasi",
     name: "Donasi",
     component: Donasi,
+    meta: { requiresAuth: true },
   },
   {
-    path: '/pilih-nominal-donasi/:id',
+    path: "/pilih-nominal-donasi/:id",
     name: "PilihNominalDonasi",
     component: PilihNominalDonasi,
+    meta: { requiresAuth: true },
   },
   {
     path: "/profile",
     name: "profile",
     component: Profil,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/donasi/:id',
+    name: 'detailDonasi',
+    component: detailDonasi,
   },
 ];
 
@@ -85,23 +104,28 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((toRoute, _, next) => {
-  const metaTitle = toRoute?.meta?.title as string;
-  const metaDesc = toRoute?.meta?.description as string;
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = !!localStorage.getItem("token"); // Check if the user is logged in
+  if (to.matched.some((record) => record.meta.requiresAuth) && !isLoggedIn) {
+    next({ name: "login" }); // Redirect to login page if not logged in
+  } else {
+    const metaTitle = to.meta.title as string;
+    const metaDesc = to.meta.description as string;
 
-  window.document.title = metaTitle || "Untitled";
-  if (metaDesc) {
-    addMetaTag(metaDesc);
+    if (metaTitle) {
+      document.title = metaTitle;
+    }
+
+    if (metaDesc) {
+      const element = document.querySelector(`meta[name='description']`);
+      if (element) {
+        element.setAttribute("content", metaDesc);
+      }
+    }
+
+    next(); // Proceed to the route
   }
-  next();
 });
-
-const addMetaTag = (value: string) => {
-  const element = document.querySelector(`meta[name='description']`);
-  if (element) {
-    element.setAttribute("content", value);
-  }
-};
 
 const app = createApp(App);
 
@@ -109,6 +133,6 @@ const app = createApp(App);
 axios.defaults.baseURL = "http://localhost:3001"; // Ganti sesuai URL backend Anda
 app.config.globalProperties.$http = axios;
 
-createApp(App).use(router).mount("#app");
+app.use(router).mount("#app");
 
 export default router;

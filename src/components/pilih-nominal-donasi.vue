@@ -8,7 +8,7 @@
       class="absolute w-full top-[70.1px] right-[0px] left-[0px] bg-whitesmoke-100 h-[580.8px] text-left text-base text-gray-600 font-poppins"
     >
       <img
-        class="absolute top-[calc(50%_-_270.4px)] left-[393.5px] w-[125px] h-[125px] overflow-hidden object-cover"
+        class="absolute top-[calc(50%_-_270.4px)] left-[393.5px] w-[125px] h-[125px] overflow-hidden object-cover ml-8 rounded-3xs"
         loading="lazy"
         :alt="donation.title"
         :src="getImageUrl(donation.image)"
@@ -21,31 +21,10 @@
             class="absolute top-[3.3px] left-[0px] leading-[16px] flex items-center w-[458.7px] h-8"
           >
             <span class="w-full">
-              <p class="m-0">{{ donation.title }}</p>
+              <p class="m-0 ml-5">{{ donation.title }}</p>
             </span>
           </b>
         </div>
-        <!-- <img
-          class="absolute top-[calc(50%_-_21.3px)] left-[15px] rounded-3xs w-5 h-5 overflow-hidden object-contain"
-          loading="lazy"
-          alt=""
-          src=""
-        />
-        <div
-          class="absolute top-[40px] left-[35px] w-[135.8px] h-[21px] text-sm"
-        >
-          <div
-            class="absolute top-[-0.2px] left-[0px] leading-[21px] font-light flex items-center w-[121.2px] h-[21px]"
-          >
-             Wahyu Nasution
-          </div>
-          <img
-            class="absolute top-[calc(50%_-_6.8px)] left-[120.8px] w-[15px] h-[15px] overflow-hidden object-contain"
-            loading="lazy"
-            alt=""
-            src=""
-          />
-        </div> -->
       </div>
       <div
         class="absolute h-[calc(100%_-_253px)] top-[153px] bottom-[100px] left-[calc(50%_-_310px)] w-[620px] text-sm"
@@ -63,48 +42,19 @@
           >
             Pilih nominal yang tersedia
           </div>
+          <!-- Nominal Options -->
           <div
-            v-bind:class="{ 'active-nominal': selectedNominal === 30000 }"
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[78.98%] bottom-[61.87%] left-[4.41%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
-            @click="setNominal(30000)"
+            v-for="nominal in nominalOptions"
+            :key="nominal"
+            :class="{ 'active-nominal': selectedNominal === nominal }"
+            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
+            :style="{ left: getNominalLeftPosition(nominal) }"
+            @click="setNominal(nominal)"
           >
             <div
               class="absolute top-[4.8px] left-[calc(50%_-_31.5px)] leading-[21px] font-light flex items-center justify-center w-[63.3px] h-[21px] whitespace-nowrap"
             >
-              Rp30.000
-            </div>
-          </div>
-          <div
-            v-bind:class="{ 'active-nominal': selectedNominal === 50000 }"
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[62.03%] bottom-[61.87%] left-[21.36%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
-            @click="setNominal(50000)"
-          >
-            <div
-              class="absolute top-[4.8px] left-[calc(50%_-_31.5px)] leading-[21px] font-light flex items-center justify-center w-[63.3px] h-[21px] whitespace-nowrap"
-            >
-              Rp50.000
-            </div>
-          </div>
-          <div
-            v-bind:class="{ 'active-nominal': selectedNominal === 75000 }"
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[45.08%] bottom-[61.87%] left-[38.31%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
-            @click="setNominal(75000)"
-          >
-            <div
-              class="absolute top-[4.8px] left-[calc(50%_-_31.1px)] leading-[21px] font-light flex items-center justify-center w-[63px] h-[21px] whitespace-nowrap"
-            >
-              Rp75.000
-            </div>
-          </div>
-          <div
-            v-bind:class="{ 'active-nominal': selectedNominal === 100000 }"
-            class="absolute h-[9.15%] w-[16.61%] top-[28.98%] right-[28.14%] bottom-[61.87%] left-[55.25%] rounded-23xl box-border text-center border-[1px] border-solid border-whitesmoke-300 cursor-pointer nominal-item"
-            @click="setNominal(100000)"
-          >
-            <div
-              class="absolute top-[4.8px] left-[calc(50%_-_33.7px)] leading-[21px] font-light flex items-center justify-center w-[68px] h-[21px] whitespace-nowrap"
-            >
-              Rp100.000
+              Rp{{ nominal.toLocaleString() }}
             </div>
           </div>
           <div
@@ -169,11 +119,12 @@ export default defineComponent({
   components: { BackgroundShadow2 },
   setup() {
     const donation = ref({});
-    const nominalLainnya = ref<number | string>("");
-    const selectedNominal = ref<number | null>(null);
+    const nominalLainnya = ref<number | string>(""); // Nominal lainnya
+    const selectedNominal = ref<number | null>(null); // Nominal yang dipilih
     const route = useRoute();
     const donationId = route.params.id;
 
+    // Fetch donation details
     const fetchDonationDetail = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -198,15 +149,18 @@ export default defineComponent({
       fetchDonationDetail();
     });
 
+    // Set nominal value
     const setNominal = (nominal: number) => {
       selectedNominal.value = nominal;
       nominalLainnya.value = nominal;
     };
 
+    // Increment nominal value
     const incrementNominal = () => {
       nominalLainnya.value = Number(nominalLainnya.value) + 10000;
     };
 
+    // Decrement nominal value
     const decrementNominal = () => {
       if (Number(nominalLainnya.value) - 10000 >= 10000) {
         nominalLainnya.value = Number(nominalLainnya.value) - 10000;
@@ -215,12 +169,25 @@ export default defineComponent({
       }
     };
 
+    // Handle button click
     const onButtonClick = (donationId: string) => {
       window.location.href = `/infodonatur/${donationId}?nominal=${nominalLainnya.value}`;
     };
+
+    // Get image URL
     const getImageUrl = (imageName: string) => {
       return `${imageName}`;
     };
+
+    // Nominal options
+    const nominalOptions = [30000, 50000, 75000, 100000];
+
+    // Get left position for nominal options
+    const getNominalLeftPosition = (nominal: number) => {
+      const index = nominalOptions.indexOf(nominal);
+      return `${4.41 + index * 16.95}%`;
+    };
+
     return {
       donation,
       getImageUrl,
@@ -230,6 +197,8 @@ export default defineComponent({
       incrementNominal,
       decrementNominal,
       onButtonClick,
+      nominalOptions,
+      getNominalLeftPosition,
     };
   },
 });

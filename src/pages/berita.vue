@@ -1,14 +1,43 @@
 <template>
   <div
-    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-start justify-start gap-[10px] tracking-[normal] leading-[normal]"
+    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-center justify-start gap-[30px] leading-[normal] tracking-[normal] text-left text-sm text-slategray-100 font-poppins"
   >
-    <BackgroundShadow1 />
+    <MainContent />
+    <!-- Input Pencarian -->
+    <div class="flex gap-4">
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Cari berita..."
+        class="w-full max-w-[400px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-lightseagreen-200"
+      />
+      <select
+        v-model="selectedCategory"
+        class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-lightseagreen-200"
+      >
+        <option value="">Semua Kategori</option>
+        <option
+          v-for="category in categories"
+          :key="category.id"
+          :value="category.id"
+        >
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
     <main
       class="self-stretch shrink-0 flex flex-row items-start justify-center py-0 pr-[21px] pl-5 box-border max-w-full text-left text-sm text-gray-700 font-poppins"
     >
       <section
         class="flex-1 flex flex-col items-start justify-start gap-[26px] max-w-full text-left text-sm text-darkslategray-200 font-poppins"
       >
+        <!-- Pesan jika tidak ada hasil -->
+        <div
+          v-if="paginatedNews.length === 0"
+          class="text-center text-gray-500 w-full"
+        >
+          Tidak ada berita yang ditemukan.
+        </div>
         <div
           class="rounded flex flex-row items-start justify-start pt-[11.8px] px-4 pb-3 gap-[7.6px]"
         ></div>
@@ -18,43 +47,11 @@
           <div
             class="flex-1 overflow-x-auto flex flex-row items-start justify-start gap-[30px] max-w-full mq725:gap-[15px]"
           >
-            <div
-              class="w-[176.7px] shrink-0 flex flex-col items-start justify-start pt-2.5 px-0 pb-0 box-border text-sm text-gray-700"
-            >
-              <div
-                class="self-stretch flex flex-col items-start justify-start gap-[20px]"
-              >
-                <Item2 />
-                <button
-                  class="cursor-pointer pt-[5px] pb-1.5 pr-[49px] pl-[50px] bg-[transparent] rounded flex flex-row items-start justify-start border-[1px] border-solid border-royalblue-100 hover:bg-cornflowerblue-300 hover:box-border hover:border-[1px] hover:border-solid hover:border-cornflowerblue-100"
-                >
-                  <div
-                    class="relative text-base leading-[24px] font-poppins text-royalblue-100 text-center inline-block min-w-[76px]"
-                  >
-                    Terapkan
-                  </div>
-                </button>
-              </div>
-              <div class="flex flex-row items-center justify-between mt-4 space-x-4">
-                <button
-                  class="prev-next-button"
-                  @click="prevPage"
-                  :disabled="currentPage === 1"
-                >
-                  « Previous
-                </button>
-                <button
-                  class="prev-next-button"
-                  @click="nextPage"
-                  :disabled="currentPage === totalPages"
-                >
-                  Next »
-                </button>
-              </div>
-            </div>
+            <!-- Filter dan kontrol lainnya -->
             <div
               class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
             >
+              <!-- Card Berita -->
               <div
                 v-for="news in paginatedNews"
                 :key="news.id"
@@ -65,7 +62,9 @@
                   loading="lazy"
                   :alt="news.title"
                   :src="getImageUrl(news.image)"
+                  @error="(e) => (e.target.src = '/fallback-news.jpg')"
                 />
+                <!-- Konten card -->
                 <div
                   class="card-content flex flex-col items-start justify-start p-4"
                 >
@@ -79,7 +78,7 @@
                       class="w-full rounded bg-slategray-100 flex items-center justify-center py-1 text-center text-2xs-5 text-white"
                     >
                       <b class="flex-1 relative leading-[10.5px] font-bold">
-                        {{ news.category || "Unknown" }}
+                        {{ news.category?.name || "Unknown" }}
                       </b>
                     </div>
                   </div>
@@ -101,6 +100,23 @@
         </div>
       </section>
     </main>
+    <div class="pagination-container flex justify-center w-full mt-4">
+      <button
+        class="prev-next-button mr-2"
+        @click="prevPage"
+        :disabled="currentPage === 1"
+      >
+        « Previous
+      </button>
+      <button
+        class="prev-next-button ml-2"
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+      >
+        Next »
+      </button>
+    </div>
+    <!-- Pagination -->
     <div
       class="self-stretch h-[339.5px] relative shrink-0 mq1050:h-auto mq1050:min-h-[339.5]"
     >
@@ -118,24 +134,60 @@ import {
   getCurrentInstance,
 } from "vue";
 import axios from "axios";
-import BackgroundShadow1 from "../components/background-shadow1.vue";
-import Item2 from "../components/item2.vue";
 import GroupComponent from "../components/group-component4.vue";
+import MainContent from "../components/main-content.vue";
+
+interface News {
+  id: string;
+  title: string;
+  category: {
+    name: string;
+  };
+  content: string;
+  image: string;
+  createdAt: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
 
 const apiBaseUrl = import.meta.env.VITE_APP_API_BASE_URL;
 export default defineComponent({
   name: "Berita1",
   components: {
-    BackgroundShadow1,
-    Item2,
+    MainContent,
     GroupComponent,
   },
   setup() {
-    const newsList = ref([]);
+    const newsList = ref<News[]>([]);
+    const categories = ref<Category[]>([]);
+    const selectedCategory = ref("");
+    const searchQuery = ref("");
     const currentPage = ref(1);
     const itemsPerPage = 9;
     const instance = getCurrentInstance(); // Get the current Vue instance
 
+    // Watcher untuk reset halaman saat pencarian berubah
+    // watch(searchQuery, () => {
+    //   currentPage.value = 1;
+    // });
+
+    // Filter berita
+    const filteredNews = computed(() => {
+      return newsList.value.filter((news) => {
+        const matchesQuery =
+          news.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          news.content?.toLowerCase().includes(searchQuery.value.toLowerCase());
+        const matchesCategory =
+          !selectedCategory.value ||
+          news.category?.id === selectedCategory.value;
+        return matchesQuery && matchesCategory;
+      });
+    });
+
+    // Fetch data
     const fetchNews = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -153,19 +205,38 @@ export default defineComponent({
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found in local storage");
+        }
+        const response = await axios.get(`${apiBaseUrl}category`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        categories.value = response.data.data.data;
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     onMounted(() => {
       fetchNews();
+      fetchCategories(); // Pastikan fetchCategories dipanggil di sini
     });
 
+    // Pagination
     const paginatedNews = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage;
       const end = start + itemsPerPage;
-      return newsList.value.slice(start, end);
+      return filteredNews.value.slice(start, end);
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(newsList.value.length / itemsPerPage);
-    });
+    const totalPages = computed(() =>
+      Math.ceil(filteredNews.value.length / itemsPerPage)
+    );
 
     const prevPage = () => {
       if (currentPage.value > 1) {
@@ -194,8 +265,12 @@ export default defineComponent({
 
     return {
       newsList,
+      categories,
+      searchQuery,
+      selectedCategory,
       currentPage,
       paginatedNews,
+      filteredNews,
       totalPages,
       prevPage,
       nextPage,

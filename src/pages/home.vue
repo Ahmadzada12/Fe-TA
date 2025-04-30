@@ -1,9 +1,10 @@
 <template>
   <div
-    class="w-full relative bg-white overflow-hidden flex flex-col items-start justify-start leading-[normal] tracking-[normal]"
+    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-center justify-start leading-[normal] tracking-[normal] text-left text-sm text-slategray-100 font-poppins"
   >
-    <div class="w-[62px] h-[58.2px] relative hidden" />
-    <div
+    <MainContent />
+    <!-- Pindahkan MainContent ke bagian atas untuk menampilkan navbar -->
+    <!-- <div
       class="self-stretch flex flex-row items-start justify-start pt-0 px-0 pb-[15px] box-border max-w-full"
     >
       <div
@@ -21,11 +22,11 @@
           src="/--------------@2x.png"
         />
       </div>
-    </div>
+    </div> -->
     <header
       class="w-[846px] flex flex-row items-start justify-center pt-0 px-5 pb-[10.9px] box-border max-w-full"
     >
-      <MainContent />
+      <!-- MainContent sudah dipindahkan ke atas -->
     </header>
     <section
       class="self-stretch flex flex-row items-start justify-start pt-0 px-0 pb-[27px] box-border max-w-full text-left text-[75.7px] text-white font-montserrat"
@@ -48,18 +49,22 @@
           <p
             class="m-0 h-[106px] flex-1 relative inline-block max-w-full z-[1] mq450:text-base"
           >
-          Galang dana untuk membantu mereka yang membutuhkan! Bersama-sama kita dapat memberikan perubahan yang positif dalam hidup orang lain.
+            Galang dana untuk membantu mereka yang membutuhkan! Bersama-sama
+            kita dapat memberikan perubahan yang positif dalam hidup orang lain.
           </p>
         </div>
       </div>
     </section>
-    <FrameComponent /><HelpThem /><div
+    <FrameComponent />
+    <HelpThem />
+    <div
       class="self-stretch h-[339.5px] relative shrink-0 mq1050:h-auto mq1050:min-h-[339.5]"
     >
       <GroupComponent4 />
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent } from "vue";
 import MainContent from "../components/main-content.vue";
