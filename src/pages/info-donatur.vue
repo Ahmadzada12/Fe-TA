@@ -167,6 +167,8 @@ export default defineComponent({
     const route = useRoute();
     const donationId = route.params.id;
     const nominal = ref<number>(0); // Tambahkan ref untuk nominal
+     const description = ref<string>(""); // 1.1. Definisikan description sebagai ref di setup
+    const errorMessage = ref<string | null>(null); // 1.2. Tambahkan ref untuk pesan error
 
     const fetchDonationDetail = async () => {
       try {
