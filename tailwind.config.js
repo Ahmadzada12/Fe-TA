@@ -4,84 +4,42 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Brand Colors
         primary: "#1daa97",
         default: "#282A2F",
         "foreground-primary": "#202227",
-        white: "#fff",
-        gray: {
-          100: "#8a8c8e",
-          200: "#767676",
-          300: "#252930",
-          400: "#232733",
-          500: "#262626",
-          600: "#212529",
-          700: "#222",
-          800: "rgba(0, 0, 0, 0.15)",
-          900: "rgba(255, 255, 255, 0.01)",
-          1000: "rgba(0, 0, 0, 0.1)",
-          1100: "rgba(0, 0, 0, 0.5)",
-          1200: "rgba(255, 255, 255, 0)",
-        },
-        lightgray: {
-          100: "#ced4da",
-          200: "#cfd2d5",
-          300: "#d0d0d0",
-        },
-        dimgray: {
-          100: "#737373",
-          200: "#5c5d5e",
-        },
+
+        // Core Brand Palette
         lightseagreen: {
-          100: "#36c4b0",
-          200: "#1daa97",
+          50: "#f0fdfa", // Very light tint
+          100: "#36c4b0", // Light
+          200: "#1daa97", // Primary brand color
+          300: "#0d9488", // Darker shade
         },
-        black: "#000",
+
+        // Status Colors (Bootstrap-compatible)
+        success: "#28a745",
+        danger: "#dc3545",
+        warning: "#ffc107",
+        info: "#007bff",
+
+        // Background Colors
+        background: {
+          primary: "#ffffff",
+          secondary: "#f8f9fa",
+          muted: "#f1f5f9",
+        },
+
+        // Legacy colors (keep for backward compatibility, but organized)
+        // TODO: Gradually migrate these to standard Tailwind grays
         whitesmoke: {
-          100: "#f9f9f9",
-          200: "#f8f4f0",
-          300: "#eee",
-          400: "#e9ecef",
-          500: "#e7eaed",
-          600: "#e7e9ed",
+          100: "#f9f9f9", // ≈ gray-50
+          200: "#f8f4f0", // Custom beige tint
+          300: "#eeeeee", // ≈ gray-200
         },
-        royalblue: {
-          100: "#007bff",
-          200: "#0075ff",
-        },
-        slategray: {
-          100: "#6c757d",
-          200: "#5d6778",
-        },
-        gold: "#ffc107",
-        darkslategray: {
-          100: "#495057",
-          200: "#333",
-          300: "#252b2c",
-          400: "rgba(54, 65, 88, 0.2)",
-        },
-        cornflowerblue: {
-          100: "#26a1ff",
-          200: "#2196f3",
-          300: "rgba(38, 161, 255, 0.09)",
-        },
-        lightslategray: "#818b99",
-        steelblue: "#395b98",
-        mediumseagreen: "#5cb377",
-        darkgray: {
-          100: "#aaa",
-          200: "#9fa7b5",
-        },
-        ghostwhite: "#f5f6fe",
-        lavenderblush: "#fdeded",
-        firebrick: {
-          100: "#cc2b30",
-          200: "#a31515",
-          300: "#a5050a",
-        },
-        gainsboro: "#dee2e6",
-        aliceblue: "#e8f0fe",
-        crimson: "#dc3545",
-        forestgreen: "#28a745",
+
+        // Note: Removed redundant 'neutral' colors as they overlap with default 'gray'
+        // Use standard Tailwind gray-50, gray-100, etc. instead
       },
       spacing: {},
       fontFamily: {
@@ -94,6 +52,13 @@ module.exports = {
         "roboto-condensed": "'Roboto Condensed'",
       },
       borderRadius: {
+        // Keep Tailwind defaults and add meaningful extensions
+        "4xl": "2rem", // 32px
+        "5xl": "2.5rem", // 40px
+        "6xl": "3rem", // 48px
+
+        // Legacy custom radius (keep for backward compatibility)
+        // TODO: Gradually migrate to standard naming
         "3xs": "10px",
         "10xs-6": "2.6px",
         "base-2": "16.2px",
@@ -105,60 +70,43 @@ module.exports = {
       },
     },
     fontSize: {
-      base: "16px",
-      "3xl": "22px",
-      lg: "18px",
-      "4xs-6": "8.6px",
-      "lgi-5": "19.5px",
-      "37xl-9": "56.9px",
-      "15xl": "34px",
-      "27xl": "46px",
-      "xs-2": "11.2px",
-      "2xs-5": "10.5px",
-      "lgi-2": "19.2px",
-      "4xs": "9px",
-      "41xl": "60px",
-      "17xl": "36px",
-      "29xl": "48px",
-      xl: "20px",
-      "31xl": "50px",
-      "11xl": "30px",
-      "21xl": "40px",
-      "26xl": "45px",
-      "lgi-3": "19.3px",
-      "xl-6": "20.6px",
-      "8xl": "27px",
-      "4xl-2": "23.2px",
-      lgi: "19px",
-      sm: "14px",
-      "xl-2": "20.2px",
-      "5xl": "24px",
-      mini: "15px",
-      "lgi-8": "19.8px",
-      "mini-2": "14.2px",
-      "lgi-9": "19.9px",
-      mid: "17px",
-      "13xl": "32px",
-      "7xl": "26px",
-      "3xs-8": "9.8px",
-      "sm-8": "13.8px",
-      "sm-7": "13.7px",
-      "sm-6": "13.6px",
-      "sm-5": "13.5px",
-      "sm-9": "13.9px",
-      "mini-4": "14.4px",
-      xs: "12px",
+      // Standard Tailwind scale (keep defaults)
+      xs: "0.75rem", // 12px
+      sm: "0.875rem", // 14px
+      base: "1rem", // 16px
+      lg: "1.125rem", // 18px
+      xl: "1.25rem", // 20px
+      "2xl": "1.5rem", // 24px
+      "3xl": "1.875rem", // 30px
+      "4xl": "2.25rem", // 36px
+      "5xl": "3rem", // 48px
+
+      // Custom extensions (organized)
+      "xs-sm": "0.8125rem", // 13px - between xs and sm
+      "lg-xl": "1.1875rem", // 19px - between lg and xl
+
+      // Large display sizes
+      "6xl": "3.75rem", // 60px
+      "7xl": "4.5rem", // 72px
+
+      // Keep only essential custom sizes
       inherit: "inherit",
     },
     screens: {
+      // Standard Tailwind breakpoints (min-width)
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+
+      // Legacy custom breakpoints (keep for backward compatibility)
+      // TODO: Gradually migrate to standard breakpoints
       mq1325: {
         raw: "screen and (max-width: 1325px)",
       },
       mq1225: {
         raw: "screen and (max-width: 1225px)",
-      },
-      lg: {
-        max: "1200px",
       },
       mq1125: {
         raw: "screen and (max-width: 1125px)",
@@ -180,7 +128,7 @@ module.exports = {
       },
     },
   },
-  plugins:[],
+  plugins: [],
   corePlugins: {
     preflight: false,
   },

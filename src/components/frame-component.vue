@@ -74,11 +74,9 @@
 </template>
 <script lang="ts">
   import { defineComponent } from "vue";
-  import OverlayShadow from "./overlay-shadow.vue";
 
   export default defineComponent({
     name: "FrameComponent",
-    components: { OverlayShadow },
     methods: {
       onLinkContainerClick() {
         this.$router.push("/donasi1");

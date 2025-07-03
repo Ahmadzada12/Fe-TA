@@ -1,127 +1,180 @@
 <template>
-  <div
-    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-center justify-start gap-[30px] leading-[normal] tracking-[normal] text-left text-sm text-slategray-100 font-poppins"
-  >
+  <div class="w-full bg-gray-50 min-h-screen flex flex-col font-poppins">
     <MainContent />
-    <!-- Input Pencarian -->
-    <div class="flex gap-4">
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Cari berita..."
-        class="w-full max-w-[400px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-lightseagreen-200"
-      />
-      <select
-        v-model="selectedCategory"
-        class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-lightseagreen-200"
-      >
-        <option value="">Semua Kategori</option>
-        <option
-          v-for="category in categories"
-          :key="category.id"
-          :value="category.id"
-        >
-          {{ category.name }}
-        </option>
-      </select>
+    <!-- Header Section -->
+    <div class="w-full max-w-6xl mx-auto px-5 mt-8">
+      <!-- Title -->
+      <div class="text-center sm:text-left mb-6">
+        <h1 class="text-3xl font-bold text-slate-800">Berita & Update</h1>
+      </div>
+
+      <!-- Search and Filter in One Row -->
+      <div class="flex flex-row gap-3 items-center w-full mb-4">
+        <!-- Search Input -->
+        <div class="relative flex-1 min-w-0">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari berita..."
+            class="w-11/12 p-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lightseagreen-200 transition-shadow"
+          />
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <svg
+              class="h-5 w-5 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="flex-shrink-0 w-48 min-w-[180px]">
+          <select
+            v-model="selectedCategory"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lightseagreen-200 bg-white"
+          >
+            <option value="">Semua Kategori</option>
+            <option
+              v-for="category in categories"
+              :key="category.id"
+              :value="category.id"
+            >
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
-    <main
-      class="self-stretch shrink-0 flex flex-row items-start justify-center py-0 pr-[21px] pl-5 box-border max-w-full text-left text-sm text-gray-700 font-poppins"
-    >
-      <section
-        class="flex-1 flex flex-col items-start justify-start gap-[26px] max-w-full text-left text-sm text-darkslategray-200 font-poppins"
-      >
-        <!-- Pesan jika tidak ada hasil -->
+
+    <!-- Konten Utama -->
+    <div class="flex-1 w-full flex flex-col">
+      <main class="w-full max-w-6xl mx-auto px-5 mt-8 mb-16">
+        <!-- State: Tidak ada data -->
         <div
           v-if="paginatedNews.length === 0"
-          class="text-center text-gray-500 w-full"
+          class="text-center py-20 text-gray-500"
         >
-          Tidak ada berita yang ditemukan.
+          <p class="text-lg">Tidak ada berita yang ditemukan.</p>
+          <p v-if="searchQuery" class="text-sm">
+            Coba ubah kata kunci pencarian Anda.
+          </p>
         </div>
-        <div
-          class="rounded flex flex-row items-start justify-start pt-[11.8px] px-4 pb-3 gap-[7.6px]"
-        ></div>
-        <div
-          class="self-stretch flex flex-row items-start justify-start py-0 pr-0 pl-[15px] box-border max-w-full text-base"
-        >
+
+        <!-- State: Tampilkan Berita dalam Grid -->
+        <div v-else>
           <div
-            class="flex-1 overflow-x-auto flex flex-row items-start justify-start gap-[30px] max-w-full mq725:gap-[15px]"
+            class="grid gap-8"
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+              grid-template-rows: repeat(3, minmax(350px, auto));
+              min-height: 800px;
+              width: 100%;
+            "
           >
-            <!-- Filter dan kontrol lainnya -->
-            <div
-              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
-            >
-              <!-- Card Berita -->
+            <!-- Kartu Berita -->
+            <div v-for="index in 9" :key="index" class="grid-slot">
               <div
-                v-for="news in paginatedNews"
-                :key="news.id"
-                class="card shadow-[0px_0px_8px_rgba(0,_0,_0,_0.12)] rounded-3xs bg-gray-1200 overflow-hidden flex flex-col"
+                v-if="paginatedNews[index - 1]"
+                class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300 group h-full"
               >
+                <!-- Gambar Berita -->
                 <img
-                  class="card-image relative max-w-full object-cover"
+                  class="h-52 w-full object-cover cursor-pointer"
                   loading="lazy"
-                  :alt="news.title"
-                  :src="getImageUrl(news.image)"
-                  @error="(e) => (e.target.src = '/fallback-news.jpg')"
+                  :alt="paginatedNews[index - 1].title"
+                  :src="getImageUrl(paginatedNews[index - 1].image)"
+                  @error="
+                    (e) =>
+                      ((e.target as HTMLImageElement).src =
+                        '/fallback-news.jpg')
+                  "
+                  @click="onBacaClick(paginatedNews[index - 1].id)"
                 />
-                <!-- Konten card -->
-                <div
-                  class="card-content flex flex-col items-start justify-start p-4"
-                >
-                  <div
-                    class="self-stretch flex flex-col items-start justify-start gap-2"
-                  >
-                    <b class="relative leading-[16px]">
-                      <p class="m-0">{{ news.title }}</p>
-                    </b>
-                    <div
-                      class="w-full rounded bg-slategray-100 flex items-center justify-center py-1 text-center text-2xs-5 text-white"
+
+                <!-- Konten Kartu -->
+                <div class="card-content flex-1 flex flex-col p-4">
+                  <!-- Kategori Badge -->
+                  <div class="mb-3">
+                    <span
+                      class="inline-block bg-lightseagreen-200 text-white text-xs font-bold px-3 py-1 rounded-full"
                     >
-                      <b class="flex-1 relative leading-[10.5px] font-bold">
-                        {{ news.category?.name || "Unknown" }}
-                      </b>
-                    </div>
+                      {{
+                        paginatedNews[index - 1].category?.name ||
+                        "Uncategorized"
+                      }}
+                    </span>
                   </div>
 
-                  <button
-                    class="donate-button cursor-pointer pt-[5px] pb-1.5 bg-lightseagreen-200 w-full rounded mt-4 flex items-center justify-center border-[1px] border-solid border-royalblue-100 hover:bg-lightseagreen-100 hover:box-border hover:border-[1px] hover:border-solid hover:border-cornflowerblue-100"
-                    @click="onBacaClick(news.id)"
+                  <!-- Judul Berita -->
+                  <h3
+                    class="relative leading-tight line-clamp-3 h-16 cursor-pointer group-hover:text-lightseagreen-300 font-semibold mb-3"
+                    @click="onBacaClick(paginatedNews[index - 1].id)"
+                    :title="paginatedNews[index - 1].title"
                   >
-                    <div
-                      class="w-[55.3px] relative text-base leading-[24px] font-poppins text-white text-center flex items-center justify-center"
+                    {{ paginatedNews[index - 1].title }}
+                  </h3>
+
+                  <!-- Konten Preview -->
+                  <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
+                    {{ getContentPreview(paginatedNews[index - 1].content) }}
+                  </p>
+
+                  <!-- Tanggal dan Tombol Baca -->
+                  <div class="flex justify-between items-center mt-auto">
+                    <span class="text-xs text-gray-500">
+                      {{ formatDate(paginatedNews[index - 1].createdAt) }}
+                    </span>
+                    <button
+                      class="bg-lightseagreen-200 text-white font-bold py-2 px-4 rounded-lg hover:bg-lightseagreen-100 transition-colors text-sm"
+                      @click="onBacaClick(paginatedNews[index - 1].id)"
                     >
-                      Baca
-                    </div>
-                  </button>
+                      Baca Selengkapnya
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Paginasi -->
+          <div
+            v-if="totalPages > 1"
+            class="pagination-container flex justify-center items-center w-full mt-12 space-x-2"
+          >
+            <button
+              class="page-button"
+              @click="prevPage"
+              :disabled="currentPage === 1"
+            >
+              «
+            </button>
+            <span class="text-gray-700 font-medium text-sm">
+              Halaman {{ currentPage }} dari {{ totalPages }}
+            </span>
+            <button
+              class="page-button"
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+            >
+              »
+            </button>
+          </div>
         </div>
-      </section>
-    </main>
-    <div class="pagination-container flex justify-center w-full mt-4">
-      <button
-        class="prev-next-button mr-2"
-        @click="prevPage"
-        :disabled="currentPage === 1"
-      >
-        « Previous
-      </button>
-      <button
-        class="prev-next-button ml-2"
-        @click="nextPage"
-        :disabled="currentPage === totalPages"
-      >
-        Next »
-      </button>
+      </main>
     </div>
-    <!-- Pagination -->
-    <div
-      class="self-stretch h-[339.5px] relative shrink-0 mq1050:h-auto mq1050:min-h-[339.5]"
-    >
-      <GroupComponent />
-    </div>
+
+    <!-- Footer -->
+    <GroupComponent />
   </div>
 </template>
 
@@ -134,13 +187,14 @@ import {
   getCurrentInstance,
 } from "vue";
 import axios from "axios";
-import GroupComponent from "../components/group-component4.vue";
+import GroupComponent from "../components/footer.vue";
 import MainContent from "../components/main-content.vue";
 
 interface News {
   id: string;
   title: string;
   category: {
+    id: string;
     name: string;
   };
   content: string;
@@ -153,7 +207,8 @@ interface Category {
   name: string;
 }
 
-const apiBaseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+const apiBaseUrl =
+  import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3001/v1/";
 export default defineComponent({
   name: "Berita1",
   components: {
@@ -249,18 +304,30 @@ export default defineComponent({
         currentPage.value++;
       }
     };
-
     const onBacaClick = (newsId: string) => {
-      const router = instance.proxy?.$router; // Access router via instance
+      const router = instance?.proxy?.$router; // Access router via instance
       if (router) {
-        router.push(`/berita1/${newsId}`);
+        router.push(`/berita/${newsId}`);
       } else {
         console.error("Router not found");
       }
     };
-
     const getImageUrl = (imageName: string) => {
       return `${imageName}`;
+    };
+
+    const getContentPreview = (content: string) => {
+      if (!content) return "Tidak ada preview tersedia...";
+      return content.length > 150 ? content.substring(0, 150) + "..." : content;
+    };
+
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("id-ID", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     };
 
     return {
@@ -276,81 +343,160 @@ export default defineComponent({
       nextPage,
       onBacaClick,
       getImageUrl,
+      getContentPreview,
+      formatDate,
     };
   },
 });
 </script>
 
 <style scoped>
-.grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(1, 1fr);
+/* Line clamp utilities */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
-@media (min-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* Page button styles */
+.page-button {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.page-button:disabled {
+  background-color: #f9f9f9;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Card hover effects */
+.card {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: rgba(45, 212, 191, 0.2);
+}
+
+/* Search and Filter responsive layout */
+.search-filter-container {
+  min-height: auto;
+}
+
+@media (max-width: 640px) {
+  .search-filter-container {
+    gap: 1rem;
+  }
+
+  .search-filter-container .relative {
+    max-width: 100%;
+  }
+
+  .search-filter-container > div {
+    width: 100%;
   }
 }
 
 @media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
+  .search-filter-container {
+    align-items: center;
+  }
+
+  .search-filter-container .relative {
+    flex: 1;
+    max-width: 400px;
   }
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.2s ease-in-out;
+/* Grid responsive adjustments */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+  }
 }
 
-.card:hover {
-  transform: translateY(-10px);
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
 
-.card-image {
-  width: 100%;
-  height: 200px;
+/* Ensure proper layout */
+.min-h-screen {
+  min-height: 100vh;
 }
 
-.card-content {
-  padding: 20px;
+/* Button hover effects */
+button:hover {
+  transform: translateY(-1px);
 }
 
-.donate-button {
-  padding: 10px;
-  background-color: #009688;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
+/* Focus states for accessibility */
+input:focus,
+select:focus,
+button:focus {
+  outline: 2px solid #2dd4bf;
+  outline-offset: 2px;
 }
 
-.donate-button:hover {
-  background-color: #00796b;
+/* Prevent layout overflow */
+.search-filter-container input,
+.search-filter-container select {
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-.prev-next-button {
-  padding: 10px 20px;
-  background-color: #009688;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+/* Better mobile experience */
+@media (max-width: 480px) {
+  .search-filter-container {
+    padding: 0;
+  }
+
+  .search-filter-container input,
+  .search-filter-container select {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
 }
 
-.prev-next-button:hover {
-  background-color: #00796b;
+/* Loading states can be added here if needed */
+.card-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
 }
 
-.prev-next-button:disabled {
-  background-color: #b2dfdb;
-  cursor: not-allowed;
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 </style>

@@ -1,90 +1,117 @@
 <template>
   <div
-    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-center justify-start gap-[30px] leading-[normal] tracking-[normal] text-left text-sm text-slategray-100 font-poppins"
+    class="w-full relative [background:linear-gradient(#fff,_#fff),_#fff] overflow-y-auto flex flex-col items-center justify-start gap-[30px] leading-[normal] tracking-[normal] font-poppins"
   >
-    <mainContent />
+    <MainContent />
     <div
       class="w-full flex flex-row items-start justify-center py-0 px-5 box-border max-w-full"
     >
-      <a
-        class="text-decoration-none relative leading-[24px] font-bold text-inherit mq450:text-lgi mq450:leading-[19px]"
-        >Donasi Saya</a
-      >
+      <h1 class="text-2xl font-bold font-poppins text-slate-800">
+        Donasi Saya
+      </h1>
     </div>
     <section
-      class="self-stretch flex flex-row items-start justify-center py-0 px-9 box-border max-w-full text-left text-sm text-slategray-200 font-roboto"
+      class="self-stretch flex flex-row items-start justify-center py-0 px-9 box-border max-w-full"
     >
+      <div v-if="isLoading" class="text-center py-10">
+        <p class="font-poppins">Memuat riwayat donasi...</p>
+      </div>
+
       <div
-        class="w-full shadow-md rounded bg-white flex flex-col items-start justify-start pt-0 px-0 pb-[0.5px] box-border max-w-full"
+        v-else-if="errorMessage"
+        class="w-full max-w-4xl p-4 text-center text-red-700 bg-red-100 rounded-lg"
+      >
+        <p class="font-bold">Oops! Terjadi kesalahan</p>
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <div
+        v-else-if="donations.length > 0"
+        class="w-full shadow-md rounded-lg bg-white flex flex-col items-start justify-start max-w-4xl overflow-hidden"
       >
         <div class="overflow-x-auto w-full">
-          <table class="min-w-full bg-white">
-            <thead>
+          <table class="min-w-full w-full bg-white font-poppins table-fixed">
+            <thead class="bg-gray-50">
               <tr>
                 <th
-                  class="py-2 px-4 border-b-2 border-gray-300 text-left leading-[21px] font-bold"
+                  class="py-3 px-4 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider"
+                  style="width: 5%"
                 >
-                  ##
+                  #
                 </th>
                 <th
-                  class="py-2 px-4 border-b-2 border-gray-300 text-left leading-[21px] font-bold"
+                  class="py-3 px-4 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider"
+                  style="width: 25%"
                 >
                   Campaign
                 </th>
                 <th
-                  class="py-2 px-4 border-b-2 border-gray-300 text-left leading-[21px] font-bold"
+                  class="py-3 px-4 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider"
+                  style="width: 30%"
                 >
                   Keterangan
                 </th>
                 <th
-                  class="py-2 px-4 border-b-2 border-gray-300 text-left leading-[21px] font-bold"
+                  class="py-3 px-4 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider"
+                  style="width: 15%"
                 >
                   Waktu
                 </th>
                 <th
-                  class="py-2 px-4 border-b-2 border-gray-300 text-left leading-[21px] font-bold"
+                  class="py-3 px-4 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider"
+                  style="width: 15%"
                 >
                   Nominal
                 </th>
                 <th
-                  class="py-2 px-4 border-b-2 border-gray-300 text-left leading-[21px] font-bold"
+                  class="py-3 px-4 border-b-2 border-gray-200 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider"
+                  style="width: 10%"
                 >
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr v-for="(donation, index) in donations" :key="donation.id">
-                <td class="py-2 px-4 border-b border-gray-300">
-                  {{ index + 1 }}
-                </td>
-                <td class="py-2 px-4 border-b border-gray-300">
+            <tbody class="divide-y divide-gray-200">
+              <tr
+                v-for="(donation, index) in donations"
+                :key="donation.id"
+                class="hover:bg-gray-50"
+              >
+                <td class="py-3 px-4 text-sm text-gray-700">{{ index + 1 }}</td>
+
+                <td
+                  class="py-3 px-4 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap"
+                >
                   <router-link
                     :to="`/donasi/${donation.crowdfoundingId}`"
-                    class="text-blue-500 hover:underline"
+                    class="text-blue-600 hover:text-blue-800 font-medium"
+                    :title="donation.crowdfounding.title"
                   >
-                    {{ donation.crowdfoundingTitle }}
+                    {{ donation.crowdfounding.title }}
                   </router-link>
                 </td>
-                <td class="py-2 px-4 border-b border-gray-300">
+
+                <td
+                  class="py-3 px-4 text-sm text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap"
+                  :title="donation.message"
+                >
                   {{ donation.message }}
                 </td>
-                <td class="py-2 px-4 border-b border-gray-300">
-                  {{ new Date(donation.createdAt).toLocaleString() }}
+
+                <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ formatDateTime(donation.createdAt) }}
                 </td>
-                <td class="py-2 px-4 border-b border-gray-300">
-                  Rp. {{ donation.amount.toLocaleString() }}
+
+                <td
+                  class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 font-medium"
+                >
+                  {{ formatCurrency(donation.amount) }}
                 </td>
-                <td class="py-2 px-4 border-b border-gray-300">
+
+                <td class="py-3 px-4 whitespace-nowrap">
                   <span
-                    :class="{
-                      'bg-green-500 text-white px-2 py-1 rounded':
-                        donation.status === 'SUCCESS',
-                      'bg-red-500 text-white px-2 py-1 rounded':
-                        donation.status === 'FAILED',
-                      'bg-yellow-500 text-white px-2 py-1 rounded':
-                        donation.status === 'PENDING',
-                    }"
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    :class="getStatusClass(donation.status)"
                   >
                     {{ donation.status }}
                   </span>
@@ -94,143 +121,101 @@
           </table>
         </div>
       </div>
+
+      <div v-else class="text-center py-10 w-full">
+        <p class="font-poppins text-gray-500">
+          Anda belum memiliki riwayat donasi.
+        </p>
+      </div>
     </section>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
 import axios from "axios";
-import mainContent from "../components/main-content.vue";
+import MainContent from "../components/main-content.vue"; // Ganti 'mainContent' menjadi 'MainContent' sesuai konvensi
 
+// --- Interface untuk Tipe Data ---
 interface Donation {
   id: string;
-  userId: string;
   crowdfoundingId: string;
-  crowdfoundingTitle?: string;
   amount: number;
   message: string;
-  xenditInvoiceId: string;
-  status: string;
+  status: "PENDING" | "SUCCESS" | "FAILED"; // Gunakan tipe literal untuk status
   createdAt: string;
+  crowdfounding: {
+    // Sekarang objek ini ada karena 'include' di backend
+    title: string;
+  };
 }
 
-interface Crowdfounding {
-  id: string;
-  title: string;
-}
+// --- Variabel Reaktif ---
+const donations = ref<Donation[]>([]);
+const isLoading = ref<boolean>(true); // Mulai dengan true karena kita langsung fetch data
+const errorMessage = ref<string | null>(null);
 
-const apiBaseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+const apiBaseUrl =
+  import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3001/v1/";
 
-export default defineComponent({
-  name: "RiwayatDonasi",
-  components: { mainContent },
-  setup() {
-    const donations = ref<Donation[]>([]);
-    const crowdfoundings = ref<Crowdfounding[]>([]);
-
-    const fetchDonations = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No token found in local storage");
-        }
-        const response = await axios.get(`${apiBaseUrl}donate`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        donations.value = response.data;
-      } catch (error) {
-        console.error("Error fetching donations:", error);
-      }
-    };
-
-    const fetchCrowdfoundings = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No token found in local storage");
-        }
-        const response = await axios.get(`${apiBaseUrl}crowdfounding`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        crowdfoundings.value = response.data.data.data;
-      } catch (error) {
-        console.error("Error fetching crowdfoundings:", error);
-      }
-    };
-
-    const mergeDonationsWithCrowdfoundings = () => {
-      donations.value = donations.value.map((donation) => {
-        const crowdfounding = crowdfoundings.value.find(
-          (cf) => cf.id === donation.crowdfoundingId
-        );
-        return {
-          ...donation,
-          crowdfoundingTitle: crowdfounding ? crowdfounding.title : "Unknown",
-        };
-      });
-    };
-
-    onMounted(async () => {
-      await fetchDonations();
-      await fetchCrowdfoundings();
-      mergeDonationsWithCrowdfoundings();
+// --- Fungsi untuk Fetch Data ---
+const fetchDonations = async () => {
+  isLoading.value = true;
+  errorMessage.value = null;
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      errorMessage.value = "Sesi tidak valid. Silakan login kembali.";
+      // pertimbangkan untuk redirect ke halaman login di sini
+      return;
+    }
+    // Hanya perlu satu panggilan API karena data crowdfunding sudah di-include
+    const response = await axios.get(`${apiBaseUrl}donate`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
+    donations.value = response.data;
+  } catch (error: any) {
+    console.error("Error fetching donations:", error);
+    if (error.response?.data?.message) {
+      errorMessage.value = `Gagal memuat riwayat: ${error.response.data.message}`;
+    } else if (axios.isAxiosError(error) && !error.response) {
+      errorMessage.value =
+        "Tidak dapat terhubung ke server. Periksa koneksi internet Anda.";
+    } else {
+      errorMessage.value = "Gagal memuat riwayat donasi.";
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
 
-    return {
-      donations,
-    };
-  },
-});
+// --- Fungsi Bantuan untuk Formatting ---
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(value);
+};
+
+const formatDateTime = (value: string) => {
+  return new Date(value).toLocaleString("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
+const getStatusClass = (status: string) => {
+  if (status === "SUCCESS") return "bg-green-100 text-green-800";
+  if (status === "FAILED") return "bg-red-100 text-red-800";
+  if (status === "PENDING") return "bg-yellow-100 text-yellow-800";
+  return "bg-gray-100 text-gray-800";
+};
+
+// --- Lifecycle Hook ---
+onMounted(fetchDonations);
 </script>
 
 <style scoped>
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-}
-
-.table th {
-  background-color: #f5f5f5;
-  text-align: left;
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.table tbody tr:hover {
-  background-color: #f1f1f1;
-}
-
-.status-success {
-  background-color: #4caf50;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-}
-
-.status-failed {
-  background-color: #f44336;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-}
-
-.status-pending {
-  background-color: #ffeb3b;
-  color: black;
-  padding: 5px 10px;
-  border-radius: 4px;
-}
+/* Anda bisa menghapus style lama dan menggunakan kelas Tailwind sepenuhnya, atau biarkan jika ada yang masih relevan */
 </style>

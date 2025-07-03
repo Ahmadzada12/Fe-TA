@@ -1,5 +1,5 @@
 <template>
-  <BackgroundShadow2 />
+  <mainContent />
   <div
     class="w-[1377px] h-max [background:linear-gradient(#fff,_#fff),_#fff] max-w-full overflow-y-auto leading-[normal] tracking-[normal]"
   >
@@ -110,13 +110,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import BackgroundShadow2 from "./background-shadow.vue";
 import axios from "axios";
+import mainContent from "./main-content.vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "PilihNominalDonasi",
-  components: { BackgroundShadow2 },
+  components: { mainContent },
   setup() {
     const donation = ref({});
     const nominalLainnya = ref<number | string>(""); // Nominal lainnya

@@ -22,7 +22,9 @@
           Kembali
         </button>
 
-        <h2 class="text-3xl font-bold text-black mb-2 font-poppins">Profil Pengguna</h2>
+        <h2 class="text-3xl font-bold text-black mb-2 font-poppins">
+          Profil Pengguna
+        </h2>
         <p class="text-gray-600 font-poppins">Kelola informasi profil Anda</p>
       </div>
 
@@ -155,8 +157,6 @@ interface Notification {
   type: "success" | "error";
   message: string;
 }
-
-
 
 export default defineComponent({
   name: "Profil",
