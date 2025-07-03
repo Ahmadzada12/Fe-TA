@@ -226,16 +226,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.input-field {
-  @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all;
-}
+/* Menggunakan input-field global, hanya tambahkan styling khusus jika diperlukan */
 
 .save-button {
   @apply bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:bg-indigo-400 disabled:cursor-not-allowed;
 }
 
 .notification {
-  @apply fixed bottom-6 right-6 px-6 py-3 rounded-lg text-white font-medium shadow-lg;
+  @apply fixed bottom-6 right-6 px-6 py-3 rounded-lg text-white font-medium shadow-lg z-50;
 }
 
 .notification.success {

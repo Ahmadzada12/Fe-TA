@@ -1,5 +1,5 @@
 import { createApp } from "vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import App from "./App.vue";
 import axios from "axios";
 
@@ -27,20 +27,7 @@ import DetailBerita from "./pages/detail-berita.vue";
 import DonasiSukses from "./pages/donasi-sukses.vue";
 import DonasiGagal from "./pages/donasi-gagal.vue";
 
-interface Route {
-  path: string;
-  name?: string;
-  component?: any;
-  redirect?: string;
-  meta?: {
-    requiresAuth?: boolean;
-    requiresAdmin?: boolean;
-    title?: string;
-    description?: string;
-  };
-}
-
-const routes: Route[] = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",

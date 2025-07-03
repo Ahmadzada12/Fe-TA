@@ -8,11 +8,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
   @apply leading-[normal] m-0;
 }
+
+/* Reset hanya untuk elemen yang perlu direset, bukan semua elemen */
 *,
 ::before,
 ::after {
-  border-width: 0;
+  box-sizing: border-box;
+}
+
+/* Pastikan input dan form elements memiliki border default yang baik */
+input,
+textarea,
+select {
+  border-width: 1px;
+}
+
+/* Base styling untuk input fields yang konsisten */
+@layer components {
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg;
+    @apply focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500;
+    @apply transition-all duration-200;
+    @apply text-gray-900 placeholder-gray-500;
+    @apply bg-white;
+  }
+
+  .input-field:focus {
+    @apply outline-none;
+  }
+
+  .input-field:disabled {
+    @apply bg-gray-100 cursor-not-allowed;
+  }
 }

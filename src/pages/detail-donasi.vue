@@ -150,6 +150,11 @@
                 <th
                   class="text-left py-2 px-3 text-sm font-semibold text-gray-600"
                 >
+                  Keterangan
+                </th>
+                <th
+                  class="text-left py-2 px-3 text-sm font-semibold text-gray-600"
+                >
                   Waktu
                 </th>
                 <th
@@ -169,6 +174,17 @@
                   {{ donation.user.fullname || "Anonim" }}
                 </td>
                 <td class="py-3 px-3">{{ formatCurrency(donation.amount) }}</td>
+                <td class="py-3 px-3 max-w-xs">
+                  <div
+                    v-if="donation.message"
+                    class="text-sm text-gray-700 break-words"
+                  >
+                    {{ donation.message }}
+                  </div>
+                  <div v-else class="text-xs text-gray-400 italic">
+                    Tidak ada keterangan
+                  </div>
+                </td>
                 <td class="py-3 px-3 text-sm text-gray-500">
                   {{ formatDateTime(donation.createdAt) }}
                 </td>
@@ -198,6 +214,7 @@ import axios from "axios";
 interface Donation {
   id: string;
   amount: number;
+  message?: string; // Tambahkan field message
   createdAt: string;
   status: "PENDING" | "SUCCESS" | "FAILED";
   user: {
