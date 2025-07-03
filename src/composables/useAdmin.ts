@@ -256,7 +256,10 @@ export const useAdmin = () => {
     try {
       // Gunakan endpoint admin untuk melihat semua campaign termasuk yang di-restore dan yang dihapus
       // Tambah limit tinggi untuk menampilkan semua data
-      const response = await apiCall("GET", "/crowdfounding/admin?includeDeleted=true&limit=100");
+      const response = await apiCall(
+        "GET",
+        "/crowdfounding/admin?includeDeleted=true&limit=100"
+      );
 
       console.log("🎯 Donations API Response:", response);
       console.log("🎯 Donations response type:", typeof response);
