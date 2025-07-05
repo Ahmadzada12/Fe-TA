@@ -112,6 +112,16 @@
                   v-model="description"
                 ></textarea>
               </div>
+              <div
+                class="relative text-sm leading-[21px] font-poppins text-gray-600 text-left mb-1"
+              >
+                Nama Tampilan (Opsional)
+              </div>
+              <input
+                class="w-full font-poppins text-sm p-3 resize-none"
+                placeholder="Contoh: Hamba Allah, Donatur Setia (Kosongkan untuk pakai nama akun)"
+                v-model="nama"
+              />
             </div>
           </div>
           <div
@@ -182,6 +192,7 @@ export default defineComponent({
     const donation = ref<any>({}); // Pertimbangkan tipe yang lebih spesifik jika ada
     const nominal = ref<number>(0);
     const description = ref<string>("");
+    const nama = ref<string>(""); // Tambahkan state untuk nama donatur
     const errorMessage = ref<string | null>(null);
     const isLoading = ref<boolean>(false);
 
@@ -247,6 +258,7 @@ export default defineComponent({
           id: donation.value.id, // ID Proyek Crowdfunding
           amount: nominal.value.toString(),
           description: description.value,
+          donorDisplayName: nama.value.trim() || null, // Kirim nama samaran jika ada
         };
 
         const response = await axios.post(
@@ -310,6 +322,7 @@ export default defineComponent({
       isLoading,
       onUbahClick,
       createInvoice,
+      nama,
     };
   },
 });

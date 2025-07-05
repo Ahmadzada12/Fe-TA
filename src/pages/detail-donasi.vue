@@ -171,7 +171,11 @@
                 class="border-t hover:bg-gray-50"
               >
                 <td class="py-3 px-3">
-                  {{ donation.user.fullname || "Anonim" }}
+                  {{
+                    donation.donorDisplayName ||
+                    donation.user.fullname ||
+                    "Anonim"
+                  }}
                 </td>
                 <td class="py-3 px-3">{{ formatCurrency(donation.amount) }}</td>
                 <td class="py-3 px-3 max-w-xs">
@@ -215,6 +219,7 @@ interface Donation {
   id: string;
   amount: number;
   message?: string; // Tambahkan field message
+  donorDisplayName?: string; // Tambahkan field nama samaran
   createdAt: string;
   status: "PENDING" | "SUCCESS" | "FAILED";
   user: {

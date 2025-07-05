@@ -242,7 +242,7 @@
           </div>
           
           <!-- Demo Credentials Info -->
-          <div class="bg-gray-800/30 border border-gray-600 rounded-lg p-4 mt-4">
+          <!-- <div class="bg-gray-800/30 border border-gray-600 rounded-lg p-4 mt-4">
             <h3 class="text-sm font-medium text-gray-200 mb-3">🔍 Demo Credentials untuk Testing</h3>
             <div class="space-y-3">
               <div class="flex items-center justify-between">
@@ -275,7 +275,7 @@
                 💡 Admin akan diarahkan ke dashboard admin, User ke homepage
               </p>
             </div>
-          </div>
+          </div> -->
           
           <div class="w-full flex items-center justify-center py-4">
             <hr class="border-t border-gray-600 flex-grow" />
