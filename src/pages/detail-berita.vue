@@ -363,8 +363,10 @@
 
               <!-- Campaign Actions -->
               <div class="flex flex-col sm:flex-row gap-3">
+                <!-- Donasi Sekarang Button - hanya muncul jika campaign aktif -->
                 <router-link
-                  :to="`/donasi/${relatedCampaign.id}`"
+                  v-if="isCampaignActive"
+                  :to="`/pilih-nominal-donasi/${relatedCampaign.id}`"
                   class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-lightseagreen-200 text-white font-bold rounded-xl hover:bg-lightseagreen-100 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                 >
                   <svg
@@ -382,6 +384,28 @@
                   </svg>
                   Donasi Sekarang
                 </router-link>
+
+                <!-- Campaign Closed Message - muncul jika campaign sudah ditutup -->
+                <div
+                  v-else
+                  class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gray-400 text-white font-bold rounded-xl cursor-not-allowed"
+                >
+                  <svg
+                    class="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  Donasi Ditutup
+                </div>
+
                 <button
                   @click="router.push(`/donasi/${relatedCampaign.id}`)"
                   class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-white text-lightseagreen-200 font-bold rounded-xl border-2 border-lightseagreen-200 hover:bg-lightseagreen-200 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
@@ -620,6 +644,16 @@ const readingTime = computed(() => {
   const wordsPerMinute = 200;
   const words = newsDetail.value.content.split(" ").length;
   return Math.ceil(words / wordsPerMinute);
+});
+
+const isCampaignActive = computed(() => {
+  if (!relatedCampaign.value) return false;
+
+  const now = new Date();
+  const endDate = new Date(relatedCampaign.value.donationFinishedDate);
+
+  // Campaign aktif jika belum melewati tanggal selesai dan status published
+  return endDate > now && relatedCampaign.value.statusDonasi === "published";
 });
 
 // Methods
